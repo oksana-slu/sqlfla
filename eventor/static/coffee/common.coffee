@@ -9,7 +9,8 @@ adjustWidth = ->
     $input.css 'width', (inputWidth - addonWidth - 6)
 
 $ ->
-  adjustWidth()
+  $(".event textarea").css('height', 184)
+  # adjustWidth()
   $("input[type='datetime-local']").mask("99.99.9999 99:99")
 
 

@@ -1,10 +1,28 @@
 {% extends "base_auth.html" %}
-{% from "_macro.html" import form_for %}
+{% from "_macro.html" import base_form, text_field, date_field %}
 
 {% set page_title = "Create something here?" %}
 
-
 {% block content %}
   <h2>{{ self.title() }}</h2>
-  {{ form_for(event_form, class="form-vertical", field_class="input-xlarge") }}
+  {% call(event_form) base_form(event_form, class="form-vertical event") %}
+    {{ event_form.csrf_token }}
+    <fieldset>
+      <div class="row">
+        <div class="span4">
+          <legend>Details</legend>
+          {{ text_field(event_form.title, class="input-xlarge") }}
+          {{ text_field(event_form.description, class="input-xlarge") }}
+        </div>
+        <div class="span4">
+          <legend>Event dates</legend>
+          {{ date_field(event_form.starts_at) }}
+          {{ date_field(event_form.ends_at) }}
+          <legend>Registration limits</legend>
+          {{ date_field(event_form.registration_starts) }}
+          {{ date_field(event_form.registration_ends) }}
+        </div>
+      </div>
+    </fieldset>
+  {% endcall %}
 {% endblock %}
