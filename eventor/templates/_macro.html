@@ -56,20 +56,3 @@
 {% macro menu_el(endpoint) %}
   <li{% if request.endpoint == endpoint %} class="active"{% endif %}>{{ caller() }}</li>
 {% endmacro %}
-
-
-
-{#
-      <div class="control-group">
-        {{ field.label(class='control-label') }}
-        <div class="controls">
-          {% if field.type == "DateTimeField" %}
-          <div class="input-append">
-            {{ field(type='datetime-local', class=field_class, placeholder=field.description) }}<span class="add-on"><i class="icon-calendar"></i></span>
-          </div>
-          {% else %}
-          {{ field(class=field_class, placeholder=field.description) }}
-          {% endif %}
-        </div>
-      </div>
-#}
