@@ -1,0 +1,1 @@
+var adjustWidth;adjustWidth=function(){var e,t;return t=parseInt($(".input-append input").css("width")),e=parseInt($(".input-append .add-on").css("width")),console.log(t,e)},$(function(){return adjustWidth()});

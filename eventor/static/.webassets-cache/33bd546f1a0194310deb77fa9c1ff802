@@ -1,0 +1,1 @@
+$(function(){return $("input[type='datetime-local']").wrap(function(){return"<div class='input-prepend'><span class='addon'>@</span>"})});

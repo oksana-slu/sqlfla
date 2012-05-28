@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% from "_macro.html" import form_for, menu_el with context %}
+{% if not page_title %}{% set page_title = "Hello and welcome, my dear friend!" %}{% endif %}
+<html>
+  <head>
+    <title>{% block title %}{{ page_title }}{% endblock %} - Fancy Service</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/bootstrap.less") }}">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/responsive.less") }}">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="less/style.less") }}">
+    {% assets "vendor_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% assets "bootstrap_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% assets "user_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+  </head>
+  <body>
+    <div class="container">
+      <ul class="nav nav-pills pull-right">
+        {% call menu_el('auth.sign_in') %}
+          <a href="{{ url_for('auth.sign_in') }}">Main</a>
+        {% endcall %}
+        <li><a href="#">About</a></li>
+        <li><a href="#">Help</a></li>
+      </ul>
+    </div>
+    {% block content_wrapper %}
+    <div class="container">
+      <div class="row">
+        <div class="span7">
+          <h2>{{ self.title() }}</h2>
+        </div>
+        <div class="span5">
+          {% if not g.user %}
+          <div class="pull-right">
+            {% set sign_in_action = url_for('auth.sign_in') -%}
+            {{ form_for(sign_in_form, class="form-inline auth", action=sign_in_action) }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="well" style="text-align: center; vertical-align: middle;">
+        <p>Some nice text will be placed here</p>
+      </div>
+    </div>
+    {% endblock %}
+    <!-- modals -->
+  </body>
+  <script type="text/javascript">
+  (function($) {
+    $(function() {
+      $("ul.nav li.active i[class*='icon']").addClass("icon-white");
+    });
+  })(jQuery);
+  </script>
+</html>

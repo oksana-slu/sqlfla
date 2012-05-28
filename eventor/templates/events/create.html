@@ -1,0 +1,10 @@
+{% extends "base_auth.html" %}
+{% from "_macro.html" import form_for %}
+
+{% set page_title = "Create something here?" %}
+
+
+{% block content %}
+  <h2>{{ self.title() }}</h2>
+  {{ form_for(event_form, class="form-vertical", field_class="input-xlarge") }}
+{% endblock %}

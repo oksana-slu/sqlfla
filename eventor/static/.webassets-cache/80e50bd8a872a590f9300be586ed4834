@@ -1,0 +1,3 @@
+$(function() {
+  return $("input[type='datetime-local']").wrap("<div class='input-prepend'>");
+});

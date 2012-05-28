@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+
+{% block content_wrapper %}
+<div class="container">
+  <div class="row">
+    <div class="span2">
+      <ul class="nav nav-list well" style="padding-top: 8px;">
+        <li class="nav-header">general</li>
+        {% call menu_el('auth.profile') %}
+          <a href="{{ url_for('auth.profile') }}">
+            <i class="icon-home"></i> Profile
+          </a>
+        {% endcall %}
+        {% call menu_el('events.list') %}
+          <a href="{{ url_for('events.list') }}">
+            <i class="icon-calendar"></i> Events
+          </a>
+        {% endcall %}
+        <li>
+          <a href="{{ url_for('auth.sign_out') }}">
+            <i class="icon-off"></i> Sign Out
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="span10">
+      {% block content %}
+      <h2>{{ self.title() }}</h2>
+      {% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

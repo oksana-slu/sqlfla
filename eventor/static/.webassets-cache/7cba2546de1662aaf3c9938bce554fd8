@@ -1,0 +1,1 @@
+({adjustWidth:function(){var e;return e=$(".input-append input").css("width"),console.log(e)}}),$(function(){return adjustWidth()});

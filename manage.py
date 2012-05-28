@@ -1,9 +1,15 @@
 #!/usr/bin/env python
-from flaskext.script import Manager
+from flask.ext.script import Manager
+from flask.ext.assets import ManageAssets
 
-from app import app
+from eventor import app, assets
+from eventor.commands import CreateSuperuser, InitDB
 
 manager = Manager(app)
+
+manager.add_command('assets', ManageAssets(assets))
+manager.add_command('create_superuser', CreateSuperuser())
+manager.add_command('init_db', InitDB())
 
 if __name__ == '__main__':
     manager.run()

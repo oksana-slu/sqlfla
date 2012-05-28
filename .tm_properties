@@ -1,0 +1,13 @@
+projectDirectory = "$CWD"
+# windowTitle = "$TM_DISPLAYNAME"
+TM_PYTHON = /Users/nimnull/.virtualenvs/sqla/bin/python
+
+softWrap        = false
+wrapColumn      = 80
+showInvisibles  = true
+softTabs        = true
+tabSize         = 2
+
+[source.python]
+softTabs = true
+tabSize = 4

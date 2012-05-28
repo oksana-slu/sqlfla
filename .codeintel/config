@@ -1,0 +1,9 @@
+{
+    "Python": {
+        "python": "/Users/nimnull/.virtualenvs/flamaster/bin/python",
+        "pythonExtraPaths": [
+            '/Users/nimnull/Projects/medias/flamaster',
+            '/Users/nimnull/.virtualenvs/flamaster/lib/python2.7/site-packages'
+        ]
+    }
+}

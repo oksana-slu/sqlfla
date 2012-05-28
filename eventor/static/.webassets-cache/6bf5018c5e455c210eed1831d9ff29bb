@@ -1,0 +1,16 @@
+var adjustWidth;
+
+adjustWidth = function() {
+  return _($(".input-append")).each(function(el, idx) {
+    var $el, $input, addonWidth, inputWidth;
+    $el = $(el);
+    $input = $el.find("input");
+    inputWidth = parseInt($input.css('width'));
+    addonWidth = parseInt($el.find(".add-on").css('width'));
+    return $input.css('width', inputWidth - addonWidth);
+  });
+};
+
+$(function() {
+  return adjustWidth();
+});
