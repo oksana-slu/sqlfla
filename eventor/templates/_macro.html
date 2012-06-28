@@ -1,9 +1,7 @@
 {% macro base_field(field, class="input-medium") %}
 <div class="control-group">
   {{ field.label(class='control-label') }}
-  <div class="controls">
-    {{ caller(field) }}
-  </div>
+  <div class="controls">{{ caller(field) }}</div>
 </div>
 {% endmacro %}
 
@@ -21,35 +19,36 @@
   {% endcall %}
 {% endmacro %}
 
+{% macro check_field(field) %}
+<div class="control-group">
+  <div class="controls"><label class="checkbox">{{ field }}{{ field.label.text }}</label></div>
+</div>
+{% endmacro %}
+
 {% macro base_form(form, action=".", field_class="input-medium", class="form-vertical") %}
-<form class="{{ class }}" method="{{ post }}" action="{{ action }}">
+<form class="{{ class }}" method="post" action="{{ action }}">
   {{ caller(form) }}
 </form>
 {% endmacro %}
 
 {% macro form_for(form, action=".", field_class="input-medium", class="form-vertical") %}
   {% call(form) base_form(form, action=action, field_class=field_class, class=class) %}
-
-    {% if "form-inline" in class -%}
-      {% for field in form %}
-        {{ field(class=field_class, placeholder=field.description) }}
-      {% endfor %}
-    {% else %}
       <fieldset>
         {%- for field in form -%}
-
           {%- if field.type in ['HiddenField', 'CSRFTokenField'] %}
             {{ field }}
+          {% elif field.type == "BooleanField" %}
+            {{ check_field(field) }}
           {% elif field.type == "DateTimeField" %}
             {{ date_field(field, class=field_class) }}
+          {% elif field.type == 'SubmitField' %}
+
           {%- else %}
             {{ text_field(field, class=field_class) }}
           {% endif -%}
-
         {% endfor -%}
       </fieldset>
-    {% endif %}
-    <button type="submit" class="btn btn-inverse">{{ kwargs.submit|default("Go!") }}</button>
+    <button type="submit" class="pull-right btn btn-inverse">{{ kwargs.submit|default("Go!") }}</button>
   {% endcall %}
 {% endmacro %}
 

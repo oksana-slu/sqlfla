@@ -1,15 +1,44 @@
-import hashlib
 import re
 import types
-import unidecode
+from unidecode import unidecode
 import uuid
+from datetime import datetime
+from os.path import abspath, dirname, join
+from flask import json
 
 
-def plural_name(name):
-    if name[-1] == 'y':
-        return "{}ies".format(name[:-1])
-    else:
-        return "{}s".format(name)
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+
+
+class CustomEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.ctime()
+        return super(CustomEncoder, self).default(obj)
+
+
+def json_dumps(data):
+    return json.dumps(data, indent=2, cls=CustomEncoder)
+
+
+def plural_name(noun, language='en'):
+    """ pluralize a noun for the selected language
+    """
+    for applyRule in rules(language):
+        result = applyRule(noun)
+        if result:
+            return result
+
+
+def rules(language):
+    """ helper method for getting plural form rules from the text file
+    """
+    rule_file = join(dirname(abspath(__file__)), 'rules.%s') % language
+    for line in file(rule_file):
+        pattern, search, replace = line.split()
+        yield lambda word: re.search(pattern, word) and re.sub(search, replace, word)
 
 
 def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):
@@ -38,19 +67,13 @@ def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):
         return s
 
 
-def get_hexdigest(salt, raw_password):
-    """ Returns a string of the hexdigest of the given plaintext password and salt
-        using the sha1 algorithm.
-    """
-    raw_password, salt = smart_str(raw_password), smart_str(salt)
-    return hashlib.sha1(salt + raw_password).hexdigest()
-
-
-def slugify(text, separator='-', prefix=True):
+def slugify(text, separator='-'):
     text = unidecode(smart_str(text))
     text = re.sub('[^\w\s]', '', text)
     text = re.sub('[^\w]', separator, text)
-    if prefix:
-        hsh = uuid.uuid4().hex[:4]
-        text = '%s%s%s' % (text, separator, hsh)
     return text.lower()
+
+
+def underscorize(name):
+    s1 = first_cap_re.sub(r'\1_\2', name)
+    return all_cap_re.sub(r'\1_\2', s1).lower()

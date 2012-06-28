@@ -6,7 +6,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask.ext.sqlalchemy import orm
 
 from eventor import db
-from .utils import plural_name, slugify
+from .utils import plural_name, slugify, underscorize
 
 
 def raise_value(text):
@@ -23,15 +23,11 @@ class CRUDMixin(object):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __init__(self, **kwargs):
-        self.__setattrs(**kwargs)
-
     @declared_attr
     def __tablename__(cls):
         """ We want our app to be more English for pluralization cases
         """
-        table_name = plural_name(cls.__name__.lower())
-        return table_name
+        return plural_name(underscorize(cls.__name__))
 
     @classmethod
     def get(cls, id):
@@ -54,10 +50,14 @@ class CRUDMixin(object):
         commit and db.session.commit()
 
     def __setattrs(self, **kwargs):
-        cls_dict = self.__class__.__dict__
         for key in kwargs:
             key.startswith('_') and raise_value('Underscored values are not allowed')
-            key in cls_dict and setattr(self, key, kwargs[key])
+            try:
+                getattr(self, key)
+                setattr(self, key, kwargs[key])
+            except AttributeError:
+                continue
+
         return self
 
     def as_dict(self, exclude=['password']):
@@ -86,7 +86,7 @@ class SlugMixin(CRUDMixin):
         return self._slug
 
     @slug.setter
-    def set_slug(self, name):
+    def slug(self, name):
         self._slug = slugify(name)
 
     def save(self, commit=True):
@@ -100,3 +100,8 @@ class SlugMixin(CRUDMixin):
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__,
                             self.name)
+
+
+class Page(db.Model, SlugMixin):
+    content = db.Column(db.UnicodeText)
+    auth_required = db.Column(db.Boolean, default=False, nullable=False)

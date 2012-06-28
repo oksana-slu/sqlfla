@@ -1,0 +1,7 @@
+Hello!
+
+We've noticed that you just registered at our service. So we are pleased to met you!
+Here the link to activate your account: {{ confirmation_link }}
+
+--
+Sincerely yours Mail Robot.

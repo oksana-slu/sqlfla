@@ -1,9 +1,21 @@
-Flask>=0.8
-Flask-Assets>=0.6.2
-Flask-SQLAlchemy>=0.15
-Flask-Script>=0.3.1
-Flask-WTF>=0.5.4
-Flask-Babel>=0.8
+Flask
+Flask-Assets
+Flask-SQLAlchemy
+Flask-Script
+Flask-Mail
+Flask-Uploads
+Flask-Babel
+https://github.com/nimnull/flask-security/zipball/develop#egg=Flask-Security
+https://github.com/nimnull/flask-social/zipball/develop#egg=Flask-Social
+https://github.com/nimnull/trafaret/zipball/master#egg=trafaret
+sqlamp
+# ---- social auth deps
+python-twitter
+# ---- core deps
 psycopg2
+PIL
 unidecode
+# --- test deps
+pytest
+yuicompressor
 closure

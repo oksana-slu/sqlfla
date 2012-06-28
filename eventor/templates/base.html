@@ -10,6 +10,7 @@
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/bootstrap.less") }}">
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/responsive.less") }}">
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="less/style.less") }}">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     {% assets "vendor_js" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
@@ -21,28 +22,30 @@
     {% endassets %}
   </head>
   <body>
+    {% if g.user.is_anonymous() %}
+      {% include "auth/_form_sign_in.html" %}
+      {% include "auth/_form_sign_up.html" %}
+    {% endif %}
     <div class="container">
       <ul class="nav nav-pills pull-right">
         {% call menu_el('auth.sign_in') %}
-          <a href="{{ url_for('auth.sign_in') }}">Main</a>
+          <a href="{{ url_for('core.index') }}">Main</a>
         {% endcall %}
         <li><a href="#">About</a></li>
         <li><a href="#">Help</a></li>
+        {% if g.user.is_anonymous() %}
+        <li><a data-toggle="modal" href="#signUp">Sign Up</a></li>
+        <li><a data-toggle="modal" href="#signIn">Login</a></li>
+        {% else %}
+        <li><a data-toggle="modal" href="#signIn">Logout</a></li>
+        {% endif %}
       </ul>
     </div>
     {% block content_wrapper %}
     <div class="container">
       <div class="row">
-        <div class="span7">
+        <div class="span12 page-header">
           <h2>{{ self.title() }}</h2>
-        </div>
-        <div class="span5">
-          {% if not g.user %}
-          <div class="pull-right">
-            {% set sign_in_action = url_for('auth.sign_in') -%}
-            {{ form_for(sign_in_form, class="form-inline auth", action=sign_in_action) }}
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>
