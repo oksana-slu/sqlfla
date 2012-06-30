@@ -21,6 +21,13 @@ class CustomEncoder(json.JSONEncoder):
         return super(CustomEncoder, self).default(obj)
 
 
+def jsonify_status_code(data=None, status=200):
+    data = data or {}
+
+    return current_app.response_class(json_dumps(data),
+        status=status, mimetype='application/json')
+
+
 def json_dumps(data):
     return json.dumps(data, indent=2, cls=CustomEncoder)
 
