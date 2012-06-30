@@ -1,6 +1,6 @@
 from flask.ext.wtf import (Form, TextAreaField, TextField, DateTimeField,
                            validators)
-from .models import Event
+from .models import Event, EventStory
 
 
 class EventForm(Form):
@@ -25,3 +25,13 @@ class EventForm(Form):
         ev = Event()
         self.populate_obj(ev)
         return commit and ev.save() or ev
+
+
+class EventStoryForm(Form):
+    name = TextField('Give a name for your event')
+    description = TextAreaField('Place a couple of words to describe')
+
+    def save(self, commit=True):
+        ev_story = EventStory()
+        self.populate_obj(ev_story)
+        return commit and ev_story.save() or ev_story

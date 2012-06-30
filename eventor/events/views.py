@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for
 
 from . import events
 from .forms import EventForm
-from .models import Event
+from .models import Event, EventStory
 
 
 @events.route('/stories')
@@ -12,13 +12,21 @@ def list_stories():
 
 @events.route('/stories/create', methods=['GET', 'POST'])
 def create_story():
+    return render_template('events/create_story.html')
+
+
+@events.route('/stories/<int:id>/create', methods=['GET', 'POST'])
+def create_event(id):
+    story = EventStory.query.get_or_404(id)
     form = EventForm(request.form or None)
     if form.validate():
-        ev = form.save()
-        return redirect(url_for('events.show', id=ev.id))
-    return render_template("events/create_story.html", event_form=form)
+        ev = form.save(commit=False)
+        ev.storyline = story
+        ev.save()
+        return redirect(url_for('events.show_event', id=ev.id))
+    return render_template("events/create.html", event_form=form)
 
 
-@events.route('/show/<int:id>')
-def show(id):
+@events.route('/<int:id>')
+def show_event(id):
     return render_template("events/show.html", event=Event.get_or_404(id))
