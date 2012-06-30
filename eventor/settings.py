@@ -19,4 +19,7 @@ SECURITY_POST_LOGIN_VIEW = '/profile/'
 
 ADMINS = ('nimnull@gmail.com',)
 
-from local_settings import *
+try:
+    from local_settings import *
+except ImportError:
+    pass
