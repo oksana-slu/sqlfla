@@ -47,7 +47,7 @@ class User(db.Model, CRUDMixin, UserMixin):
 
     @classmethod
     def create(cls, **kwargs):
-        return cls(**kwargs).save()
+        return app.security.datastore.create_user(**kwargs)
 
     @classmethod
     def is_unique(cls, email):

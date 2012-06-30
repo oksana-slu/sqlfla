@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from datetime import datetime
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declared_attr
 
@@ -18,9 +19,15 @@ lazy_cascade = {
 
 class EventStory(db.Model, CRUDMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    author = db.relationship('User', backref='stories', **lazy_cascade)
+    author = db.relationship('User', backref='stories', uselist=False, **lazy_cascade)
     name = db.Column(db.Unicode(255), nullable=False)
     description = db.Column(db.UnicodeText, nullable=False)
+
+    @property
+    def active(self):
+        return Event.query.filter_by(story_id=self.id) \
+            .filter(Event.reg_starts >= datetime.utcnow(),
+                    Event.reg_ends <= datetime.utcnow())
 
 
 class ParticipantMixin(CRUDMixin):
@@ -51,10 +58,10 @@ class EventSpeaker(db.Model, ParticipantMixin):
 
 class Event(db.Model, SlugMixin):
     description = db.Column(db.UnicodeText)
-    starts_at = db.Column(db.DateTime)
-    ends_at = db.Column(db.DateTime)
-    reg_starts = db.Column(db.DateTime)
-    reg_ends = db.Column(db.DateTime)
+    starts_at = db.Column(db.DateTime, nullable=False)
+    ends_at = db.Column(db.DateTime, nullable=False)
+    reg_starts = db.Column(db.DateTime, nullable=False)
+    reg_ends = db.Column(db.DateTime, nullable=False)
 
     story_id = db.Column(db.Integer, db.ForeignKey('event_stories.id'))
     storyline = db.relationship('EventStory', lazy='dynamic', backref='events')

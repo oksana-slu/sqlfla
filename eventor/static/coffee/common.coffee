@@ -13,8 +13,7 @@ $ ->
   # adjustWidth()
   $("input[type='datetime-local']").mask("99.99.9999 99:99")
 
-  $("form.event").on 'submit', (ev) ->
-    ev.preventDefault()
+  $("form").on 'submit', (ev) ->
     $(ev.currentTarget).find("[type='submit']").button 'loading'
 
 

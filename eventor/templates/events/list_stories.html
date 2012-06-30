@@ -3,6 +3,27 @@
 {% set page_title = "Your storylines here" %}
 
 {% block content %}
-  <h2>{{ self.title() }}<small><a href="{{ url_for('events.create_story') }}"><i class="icon-plus"></i></a></small></h2>
+  <h2>{{ self.title() }}<small><a href="{{ url_for('.create_story') }}"><i class="icon-plus"></i></a></small></h2>
+
+  <table class="table table-striped font_12pt">
+    <thead>
+      <tr>
+        <th>Story name</th>
+        <th>Active events</th>
+        <th>Total events</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for story in stories %}
+      <tr>
+        <td><a href="{{ url_for('.show_story', id=story.id) }}">{{ story.name }}</a></td>
+        <td><span class="badge">{{ story.events|length() }}</span></td>
+        <td><span class="badge badge-success">{{ story.active.count() }}</span></td>
+        <td><a href="{{ url_for('.remove_story', id=story.id) }}"></a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
 
