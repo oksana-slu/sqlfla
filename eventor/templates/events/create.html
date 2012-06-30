@@ -11,7 +11,7 @@
       <div class="row">
         <div class="span6">
           <legend>Details</legend>
-          {{ text_field(event_form.title, class="input-xxlarge") }}
+          {{ text_field(event_form.name, class="input-xxlarge") }}
           {{ text_field(event_form.description, class="input-xxlarge") }}
         </div>
         <div class="span4">
@@ -19,8 +19,8 @@
           {{ date_field(event_form.starts_at) }}
           {{ date_field(event_form.ends_at) }}
           <legend>Registration limits</legend>
-          {{ date_field(event_form.registration_starts) }}
-          {{ date_field(event_form.registration_ends) }}
+          {{ date_field(event_form.reg_starts) }}
+          {{ date_field(event_form.reg_ends) }}
         </div>
       </div>
       <div class="row">

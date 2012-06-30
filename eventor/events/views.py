@@ -5,18 +5,18 @@ from .forms import EventForm
 from .models import Event
 
 
-@events.route('/')
-def list():
-    return render_template("events/list.html")
+@events.route('/stories')
+def list_stories():
+    return render_template("events/list_stories.html")
 
 
-@events.route('/create', methods=['GET', 'POST'])
-def create():
+@events.route('/stories/create', methods=['GET', 'POST'])
+def create_story():
     form = EventForm(request.form or None)
     if form.validate():
         ev = form.save()
         return redirect(url_for('events.show', id=ev.id))
-    return render_template("events/create.html", event_form=form)
+    return render_template("events/create_story.html", event_form=form)
 
 
 @events.route('/show/<int:id>')
