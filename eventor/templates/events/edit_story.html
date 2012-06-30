@@ -1,19 +1,16 @@
 {% extends "base_auth.html" %}
-
 {% from "_macro.html" import form_for %}
-
-{% set page_title = "Add storyline" %}
+{% set page_title = "Editing {} story".format(story.name) %}
 
 {% block content %}
-  <h2>{{ self.title() }}</h2>
+  {{ super() }}
   <div class="row">
     <div class="span6">
-      {{ form_for(story_form, action=url_for('.create_story'),
+      {{ form_for(story_form, action=url_for('.edit_story', id=story.id),
                   field_class="input-xxlarge",
                   class="form-vertical story",
-                  submit="Create your story!") }}
+                  submit="Save after all") }}
     </div>
   </div>
 {% endblock %}
-
 

@@ -1,3 +1,4 @@
+from flask import g
 from flask.ext.wtf import (Form, TextAreaField, TextField, DateTimeField,
                            validators)
 from .models import Event, EventStory
@@ -34,7 +35,8 @@ class EventStoryForm(Form):
                     description="Place a couple of words to describe",
                     validators=[validators.Required()])
 
-    def save(self, commit=True):
-        ev_story = EventStory()
+    def save(self, obj=None, commit=True):
+        ev_story = obj or EventStory()
         self.populate_obj(ev_story)
+        g.user.stories.append(ev_story)
         return commit and ev_story.save() or ev_story

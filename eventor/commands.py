@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from datetime import datetime
 from flask.ext.script import Command, Option, prompt, prompt_pass
 from flask.ext.security.exceptions import RoleNotFoundError, UserNotFoundError
 
@@ -40,7 +41,8 @@ class CreateSuperuser(Command):
         except UserNotFoundError:
             print("Creating user: {} with password: {}".format(email, password))
             app.security.datastore.create_user(email=email, password=password,
-                                               roles=[admin_role])
+                                               roles=[admin_role],
+                                               confirmed_at=datetime.utcnow())
 
     def get_admin_role(self):
         role_name = app.config['ADMIN_ROLE']
