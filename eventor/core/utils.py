@@ -7,7 +7,7 @@ from os.path import abspath, dirname, join
 from unidecode import unidecode
 
 from flask import json
-
+from flask import current_app
 
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')
@@ -19,6 +19,13 @@ class CustomEncoder(json.JSONEncoder):
         if isinstance(obj, datetime):
             return obj.ctime()
         return super(CustomEncoder, self).default(obj)
+
+
+def jsonify_status_code(data=None, status=200):
+    data = data or {}
+
+    return current_app.response_class(json_dumps(data),
+        status=status, mimetype='application/json')
 
 
 def json_dumps(data):

@@ -6,7 +6,7 @@ from flask import abort, request, g
 from flask.views import MethodView
 
 from flask.ext.security import login_required
-from flamaster.app import db
+from eventor import db
 
 from . import http
 from . import core

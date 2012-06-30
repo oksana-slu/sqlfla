@@ -6,7 +6,7 @@ from flask.ext.security.datastore import SQLAlchemyUserDatastore
 
 from eventor import app, db
 
-from core.models import CRUDMixin
+from eventor.core.models import CRUDMixin
 # from sqlalchemy import
 
 users_roles = db.Table('users_roles', db.metadata,

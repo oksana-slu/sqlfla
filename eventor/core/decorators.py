@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from flamaster.app import db
-from flamaster.core.models import CRUDMixin
-from flamaster.core.utils import plural_name, underscorize
+from eventor import db
+from eventor.core.models import CRUDMixin
+from eventor.core.utils import plural_name, underscorize
 
 
 def api_resource(bp, endpoint, pk_def):
