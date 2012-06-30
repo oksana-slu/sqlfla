@@ -2,7 +2,7 @@ DEBUG = True
 SECRET_KEY = "<change me please!>"
 CSRF_ENABLED = True
 
-SQLALCHEMY_DATABASE_URI = "postgres://nimnull@localhost/flaskchemy"
+SQLALCHEMY_DATABASE_URI = "postgres://<db_user>@localhost/<db_name>"
 SQLALCHEMY_ECHO = True
 
 ADMIN_ROLE = 'admin'
@@ -15,6 +15,4 @@ SECURITY_URL_PREFIX = '/s'
 SECURITY_POST_REGISTER_VIEW = '/page/confirmation-email-sent'
 SECURITY_POST_LOGIN_VIEW = '/profile/'
 
-ADMINS = ('nimnull@gmail.com',)
-
-from local_settings import *
+ADMINS = ('user@gmail.com',)
