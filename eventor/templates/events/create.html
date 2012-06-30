@@ -9,10 +9,10 @@
     {{ event_form.csrf_token }}
     <fieldset>
       <div class="row">
-        <div class="span4">
+        <div class="span6">
           <legend>Details</legend>
-          {{ text_field(event_form.title, class="input-xlarge") }}
-          {{ text_field(event_form.description, class="input-xlarge") }}
+          {{ text_field(event_form.title, class="input-xxlarge") }}
+          {{ text_field(event_form.description, class="input-xxlarge") }}
         </div>
         <div class="span4">
           <legend>Event dates</legend>
@@ -21,6 +21,11 @@
           <legend>Registration limits</legend>
           {{ date_field(event_form.registration_starts) }}
           {{ date_field(event_form.registration_ends) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-actions">
+          <button type="submit" class="pull-right btn btn-inverse">Go on, create!</button>
         </div>
       </div>
     </fieldset>

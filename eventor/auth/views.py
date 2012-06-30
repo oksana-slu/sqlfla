@@ -1,5 +1,6 @@
+# -*- encoding: utf-8 -*-
 from flask import g, render_template
-from flask.ext.security import LoginForm, login_required
+from flask.ext.security import login_required
 
 
 from . import auth
@@ -17,6 +18,3 @@ def profile(id=None):
     return render_template("auth/show.html", profile=user)
 
 
-@auth.route('/sign_in')
-def sign_in():
-    return render_template('auth/sign_in.html', sign_in_form=LoginForm())

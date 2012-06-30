@@ -7,14 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="" />
-    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/bootstrap.less") }}">
-    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="bootstrap/less/responsive.less") }}">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="less/bootstrap.less") }}">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="less/responsive.less") }}">
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename="less/style.less") }}">
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     {% assets "vendor_js" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
-    {% assets "bootstrap_js" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
     {% assets "user_js" %}
@@ -50,9 +47,11 @@
       </div>
     </div>
     <div class="container">
+      {% block content %}
       <div class="well" style="text-align: center; vertical-align: middle;">
         <p>Some nice text will be placed here</p>
       </div>
+      {% endblock %}
     </div>
     {% endblock %}
     <!-- modals -->

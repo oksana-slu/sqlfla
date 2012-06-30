@@ -4,6 +4,7 @@ from flaskext.script import Command
 from . import app, db
 from auth.models import Role
 from core.models import Page
+from events.models import EventLine
 
 
 pages = [
@@ -11,7 +12,12 @@ pages = [
      'content': """
         Hey mister! You are in one step from accessing our service. Please
         confirm your email address following the link we've just sent to your
-        email box."""}
+        email box."""},
+]
+
+event_lines = [
+    {'name': "KharkivPy",
+     'description': "Харьковское python коммьюнити"}
 ]
 
 
@@ -20,6 +26,10 @@ class Seed(Command):
     def create_roles(self):
         for name in [app.config['USER_ROLE'], app.config['ADMIN_ROLE']]:
             Role.get_or_create(name=name)
+
+    def create_event_line(self):
+        for event_line in event_lines:
+            EventLine.create(**event_line)
 
     def create_pages(self):
         for page_data in pages:
@@ -31,3 +41,4 @@ class Seed(Command):
         db.create_all()
         self.create_roles()
         self.create_pages()
+        self.create_event_line()
