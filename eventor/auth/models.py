@@ -38,10 +38,6 @@ class User(db.Model, CRUDMixin, UserMixin):
     roles = db.relationship('Role', secondary=users_roles, lazy='dynamic',
                             backref=db.backref('users', lazy='dynamic'))
 
-    speaker_for = association_proxy('speaking', 'event')
-    manager_for = association_proxy('managing', 'event')
-    participant_for = association_proxy('participating', 'event')
-
     def __repr__(self):
         return "<User: %r>" % self.email
 

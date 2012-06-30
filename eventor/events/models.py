@@ -29,31 +29,19 @@ class EventStory(db.Model, CRUDMixin):
             .filter(Event.reg_starts >= datetime.utcnow(),
                     Event.reg_ends <= datetime.utcnow())
 
+events_managers = db.Table('events_managers', db.metadata,
+    db.Column('event_id', db.Integer, db.ForeignKey('events.id'),
+              primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'),
+              primary_key=True),
+)
 
-class ParticipantMixin(CRUDMixin):
-
-    @declared_attr
-    def event_id(cls):
-        return db.Column(db.Integer, db.ForeignKey('events.id'))
-
-    @declared_attr
-    def user_id(cls):
-        return db.Column(db.Integer, db.ForeignKey('users.id'))
-
-
-class EventParticipant(db.Model, ParticipantMixin):
-    event = db.relationship('Event', backref='event_participants', **lazy_cascade)
-    user = db.relationship('User', backref='participating', **lazy_cascade)
-
-
-class EventManager(db.Model, ParticipantMixin):
-    event = db.relationship('Event', backref='event_managers', **lazy_cascade)
-    user = db.relationship('User', backref='managing', **lazy_cascade)
-
-
-class EventSpeaker(db.Model, ParticipantMixin):
-    event = db.relationship('Event', backref='event_speakers', **lazy_cascade)
-    user = db.relationship('User', backref='speaking', **lazy_cascade)
+events_participants = db.Table('events_participants', db.metadata,
+    db.Column('event_id', db.Integer, db.ForeignKey('events.id'),
+              primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'),
+              primary_key=True),
+)
 
 
 class Event(db.Model, SlugMixin):
@@ -66,6 +54,7 @@ class Event(db.Model, SlugMixin):
     story_id = db.Column(db.Integer, db.ForeignKey('event_stories.id'))
     storyline = db.relationship('EventStory', lazy='dynamic', backref='events')
 
-    participants = association_proxy('event_participants', 'user')
-    managers = association_proxy('event_managers', 'user')
-    speakers = association_proxy('event_speakers', 'user')
+    participants = db.relationship('User', secondary=events_participants,
+                                   backref='participant_for')
+    managers = db.relationship('User', secondary=events_managers,
+                                   backref='manager_for')

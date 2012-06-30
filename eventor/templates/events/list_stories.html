@@ -20,7 +20,7 @@
         <td><a href="{{ url_for('.show_story', id=story.id) }}">{{ story.name }}</a></td>
         <td><span class="badge">{{ story.events|length() }}</span></td>
         <td><span class="badge badge-success">{{ story.active.count() }}</span></td>
-        <td><a href="{{ url_for('.remove_story', id=story.id) }}"></a></td>
+        <td><a href="{{ url_for('.remove_story', id=story.id) }}"><i class="icon-remove" /></a></td>
       </tr>
     {% endfor %}
     </tbody>

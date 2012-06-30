@@ -47,7 +47,7 @@ class EventStoryForm(Form):
                     validators=[validators.Required()])
 
     def save(self, obj=None, commit=True):
-        ev_story = obj or EventStory()
-        self.populate_obj(ev_story)
-        g.user.stories.append(ev_story)
-        return commit and ev_story.save() or ev_story
+        story = obj or EventStory()
+        self.populate_obj(story)
+        g.user.stories.append(story)
+        return commit and story.save() or story

@@ -1,16 +1,18 @@
 from flask import abort, g, render_template, request, redirect, url_for
-
+from flask.ext.security import login_required
 from . import events
 from .forms import EventForm, EventStoryForm
 from .models import Event, EventStory
 
 
 @events.route('/stories')
+@login_required
 def list_stories():
     return render_template("events/list_stories.html", stories=g.user.stories)
 
 
 @events.route('/stories/create', methods=['GET', 'POST'])
+@login_required
 def create_story():
     story_form = EventStoryForm(request.form or None)
 
@@ -22,6 +24,7 @@ def create_story():
 
 
 @events.route('/stories/<int:id>')
+@login_required
 def show_story(id):
     story = EventStory.query.get_or_404(id)
     story.author.first() == g.user or abort(403)
@@ -30,6 +33,7 @@ def show_story(id):
 
 
 @events.route('/stories/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_story(id):
     story = EventStory.query.get_or_404(id)
     story_form = EventStoryForm(request.form or None, obj=story)
@@ -43,6 +47,7 @@ def edit_story(id):
 
 
 @events.route('/stories/<int:id>/delete')
+@login_required
 def remove_story(id):
     story = EventStory.query.get_or_404(id)
     story.author.first() == g.user or abort(403)
@@ -51,6 +56,7 @@ def remove_story(id):
 
 
 @events.route('/stories/<int:id>/create', methods=['GET', 'POST'])
+@login_required
 def create_event(id):
     story = EventStory.query.get_or_404(id)
     form = EventForm(request.form or None)
@@ -66,5 +72,6 @@ def create_event(id):
 
 
 @events.route('/<int:id>')
+@login_required
 def show_event(id):
-    return render_template("events/show.html", event=Event.get_or_404(id))
+    return render_template("events/show.html", event=Event.query.get_or_404(id))
