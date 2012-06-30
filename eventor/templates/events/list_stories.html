@@ -1,1 +1,8 @@
 {% extends "base_auth.html" %}
+
+{% set page_title = "Your storylines here" %}
+
+{% block content %}
+  <h2>{{ self.title() }}<small><a href="{{ url_for('events.create_story') }}"><i class="icon-plus"></i></a></small></h2>
+{% endblock %}
+

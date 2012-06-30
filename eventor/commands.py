@@ -7,7 +7,7 @@ from eventor import app, db
 from auth.models import Role
 
 from core.models import Page
-from events.models import EventLine
+from events.models import EventStory
 
 
 class CreateSuperuser(Command):
@@ -69,7 +69,7 @@ pages = [
         email box."""},
 ]
 
-event_lines = [
+event_stories = [
     {'name': "KharkivPy",
      'description': "Харьковское python коммьюнити"}
 ]
@@ -82,8 +82,8 @@ class Seed(Command):
             Role.get_or_create(name=name)
 
     def create_event_line(self):
-        for event_line in event_lines:
-            EventLine.create(**event_line)
+        for event_story in event_stories:
+            EventStory.create(**event_story)
 
     def create_pages(self):
         for page_data in pages:

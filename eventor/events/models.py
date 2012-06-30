@@ -6,8 +6,9 @@ __all__ = ['Event']
 
 
 class EventStory(db.Model, CRUDMixin):
-    name = db.Column(db.Unicode(255))
-    description = db.Column(db.UnicodeText)
+    # authors = db.relationship()
+    name = db.Column(db.Unicode(255), nullable=False)
+    description = db.Column(db.UnicodeText, nullable=False)
 
 
 class Event(db.Model, SlugMixin):
@@ -17,5 +18,5 @@ class Event(db.Model, SlugMixin):
     reg_starts = db.Column(db.DateTime)
     reg_ends = db.Column(db.DateTime)
 
-    story_id = db.Column(db.Integer, db.ForeignKey('event_lines.id'))
-    storyline = db.relationship('EventLine', lazy='dynamic', backref='events')
+    story_id = db.Column(db.Integer, db.ForeignKey('event_stories.id'))
+    storyline = db.relationship('EventStory', lazy='dynamic', backref='events')

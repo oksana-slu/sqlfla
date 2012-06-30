@@ -1,1 +1,20 @@
 {% extends "base_auth.html" %}
+
+{% from "_macro.html" import form_for %}
+
+{% set page_title = "Add storyline" %}
+
+{% block content %}
+  <h2>{{ self.title() }}</h2>
+  <div class="row">
+    <div class="span6">
+      {{ story_form.errors }}
+      {{ form_for(story_form, action=url_for('events.create_story'),
+                  field_class="input-xxlarge",
+                  class="form-vertical story",
+                  submit="Create your story!") }}
+    </div>
+  </div>
+{% endblock %}
+
+
