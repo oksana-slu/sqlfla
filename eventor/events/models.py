@@ -5,7 +5,7 @@ from core.models import SlugMixin, CRUDMixin
 __all__ = ['Event']
 
 
-class EventLine(db.Model, CRUDMixin):
+class EventStory(db.Model, CRUDMixin):
     name = db.Column(db.Unicode(255))
     description = db.Column(db.UnicodeText)
 
