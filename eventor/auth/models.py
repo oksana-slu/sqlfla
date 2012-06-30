@@ -1,6 +1,4 @@
 # -*- encoding: utf-8 -*-
-from sqlalchemy.ext.associationproxy import association_proxy
-
 from flask.ext.security import Security, UserMixin
 from flask.ext.security.datastore import SQLAlchemyUserDatastore
 

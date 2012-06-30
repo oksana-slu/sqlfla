@@ -1,4 +1,6 @@
-from flask import abort, g, render_template, request, redirect, url_for
+# -*- encoding: utf-8 -*-
+import re
+from flask import abort, g, render_template, request, redirect, Response, url_for
 from flask.ext.security import login_required
 from . import events
 from .forms import EventForm, EventStoryForm
@@ -75,3 +77,16 @@ def create_event(id):
 @login_required
 def show_event(id):
     return render_template("events/show.html", event=Event.query.get_or_404(id))
+
+
+re_container = re.compile('event(?P<id>\d+)Container')
+
+
+@events.route('/wdgt/')
+def widget():
+    c = request.args.get('c') or abort(404)
+    matched = re_container.match(c) or abort(404)
+    event_id = matched.groupdict()['id']
+    response = Response(content_type="text/javascript")
+    response.data = render_template('events/widget.js', event=Event.get(event_id))
+    return response

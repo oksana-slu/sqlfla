@@ -25,9 +25,13 @@ class EventStory(db.Model, CRUDMixin):
 
     @property
     def active(self):
-        return Event.query.filter_by(story_id=self.id) \
-            .filter(Event.reg_starts >= datetime.utcnow(),
-                    Event.reg_ends <= datetime.utcnow())
+        return self.events.filter(Event.reg_starts <= datetime.utcnow(),
+                                  Event.reg_ends >= datetime.utcnow())
+
+    @property
+    def archive(self):
+        return self.events.except_(self.active)
+
 
 events_managers = db.Table('events_managers', db.metadata,
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'),
@@ -55,6 +59,7 @@ class Event(db.Model, SlugMixin):
     storyline = db.relationship('EventStory', backref=db.backref('events', **lazy_cascade))
 
     participants = db.relationship('User', secondary=events_participants,
-                                   backref='participant_for', passive_deletes=True)
+                                   backref='participant_for',
+                                   passive_deletes=True)
     managers = db.relationship('User', secondary=events_managers,
                                    backref='manager_for', passive_deletes=True)

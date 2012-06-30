@@ -1,3 +1,25 @@
 {% extends "base_auth.html" %}
 
 {% set page_title = event.name %}
+{% block content %}
+  <h2>{{ self.title() }}<small>Story: <a href="{{ url_for('.show_story', id=event.storyline.id) }}">{{ event.storyline.name }}</a></small></h2>
+  <div class="row event">
+    <div class="span5">{{ event.description }}</div>
+    <div class="span5">
+      <h3>Event schedule</h3>
+      <dl>
+        <dt>Start:</dt>
+        <dd>{{ event.starts_at.strftime("%d.%m.%Y %H:%M") }}</dd>
+        <dt>End:</dt>
+        <dd>{{ event.ends_at.strftime("%d.%m.%Y %H:%M") }}</dd>
+      </dl>
+      <h3>Registration</h3>
+      <dl>
+        <dt>Start:</dt>
+        <dd>{{ event.reg_starts.strftime("%d.%m.%Y %H:%M") }}</dd>
+        <dt>End:</dt>
+        <dd>{{ event.reg_ends.strftime("%d.%m.%Y %H:%M") }}</dd>
+      </dl>
+    </div>
+  </div>
+{% endblock %}

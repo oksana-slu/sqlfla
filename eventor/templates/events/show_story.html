@@ -13,10 +13,21 @@
       </h2>
     </div>
     <div class="span2">
-      <a href="{{ url_for('.create_event', id=story.id)}}" class="btn btn-success pull-right">Create event</a>
+      <a href="{{ url_for('.create_event', id=story.id)}}" class="btn btn-success pull-right">Create an event</a>
     </div>
   </div>
   <div class="row events">
-    <div class="span4 font_12pt">Active events:</div>
+    <div class="font_12pt span10">
+      <h3>Active events:</h3>
+      {% with events = story.active %}
+        {% include "events/inline_events.html" %}
+      {% endwith %}
+    </div>
+    <div class="font_12pt span10">
+      <h3>Archived events:</h3>
+      {% with events = story.archive %}
+        {% include "events/inline_events.html" %}
+      {% endwith %}
+    </div>
   </div>
 {% endblock %}
