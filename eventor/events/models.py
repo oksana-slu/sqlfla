@@ -19,7 +19,7 @@ lazy_cascade = {
 
 class EventStory(db.Model, CRUDMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    author = db.relationship('User', backref='stories', uselist=False, **lazy_cascade)
+    author = db.relationship('User', backref=db.backref('stories', **lazy_cascade), uselist=False)
     name = db.Column(db.Unicode(255), nullable=False)
     description = db.Column(db.UnicodeText, nullable=False)
 
@@ -52,9 +52,9 @@ class Event(db.Model, SlugMixin):
     reg_ends = db.Column(db.DateTime, nullable=False)
 
     story_id = db.Column(db.Integer, db.ForeignKey('event_stories.id'))
-    storyline = db.relationship('EventStory', lazy='dynamic', backref='events')
+    storyline = db.relationship('EventStory', backref=db.backref('events', **lazy_cascade))
 
     participants = db.relationship('User', secondary=events_participants,
-                                   backref='participant_for')
+                                   backref='participant_for', passive_deletes=True)
     managers = db.relationship('User', secondary=events_managers,
-                                   backref='manager_for')
+                                   backref='manager_for', passive_deletes=True)

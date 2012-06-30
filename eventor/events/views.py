@@ -27,7 +27,7 @@ def create_story():
 @login_required
 def show_story(id):
     story = EventStory.query.get_or_404(id)
-    story.author.first() == g.user or abort(403)
+    story.author == g.user or abort(403)
     return render_template('events/show_story.html',
                     story=story)
 
@@ -50,7 +50,7 @@ def edit_story(id):
 @login_required
 def remove_story(id):
     story = EventStory.query.get_or_404(id)
-    story.author.first() == g.user or abort(403)
+    story.author == g.user or abort(403)
     story.delete()
     return redirect(url_for('.list_stories'))
 
