@@ -11,20 +11,31 @@ class EventForm(Form):
                     validators=[validators.Required()],
                     description="Here should come some interesting facts about your event")
 
-    starts_at = DateTimeField('Starts at (DD.MM.YYYY HH:MM)', validators=[validators.Required()],
+    starts_at = DateTimeField('Starts at (DD.MM.YYYY HH:MM)',
+                              format='%d.%m.%Y %H:%M',
+                              validators=[validators.Required()],
                               description="DD.MM.YYYY HH:MM")
-    ends_at = DateTimeField('Ends at (DD.MM.YYYY HH:MM)', validators=[validators.Required()],
+    ends_at = DateTimeField('Ends at (DD.MM.YYYY HH:MM)',
+                            format='%d.%m.%Y %H:%M',
+                            validators=[validators.Required()],
                             description="DD.MM.YYYY HH:MM")
     reg_starts = DateTimeField('Registration starts at (DD.MM.YYYY HH:MM)',
-                                        validators=[validators.Required()],
-                                        description="DD.MM.YYYY HH:MM")
+                               format='%d.%m.%Y %H:%M',
+                               validators=[validators.Required()],
+                               description="DD.MM.YYYY HH:MM")
     reg_ends = DateTimeField('Registration ends at (DD.MM.YYYY HH:MM)',
-                                        validators=[validators.Required()],
-                                        description="DD.MM.YYYY HH:MM")
+                             format='%d.%m.%Y %H:%M',
+                             validators=[validators.Required()],
+                             description="DD.MM.YYYY HH:MM")
+    address = TextAreaField('Address', description="Input address details",
+                            validators=[validators.Required()])
+    max_participants = TextField('Participants limit',
+                                 description='Max. participants')
 
-    def save(self, commit=True):
-        ev = Event()
+    def save(self, obj=None, commit=True):
+        ev = obj or Event()
         self.populate_obj(ev)
+        g.user.manager_for.append(ev)
         return commit and ev.save() or ev
 
 

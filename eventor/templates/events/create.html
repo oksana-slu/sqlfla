@@ -1,7 +1,7 @@
 {% extends "base_auth.html" %}
 {% from "_macro.html" import base_form, text_field, date_field %}
 
-{% set page_title = "Create something here?" %}
+{% set page_title = "Create something for &laquo;{}&raquo;?".format(story.name)|safe() %}
 
 {% block content %}
   <h2>{{ self.title() }}</h2>
@@ -13,6 +13,7 @@
           <legend>Details</legend>
           {{ text_field(event_form.name, class="input-xxlarge") }}
           {{ text_field(event_form.description, class="input-xxlarge") }}
+          {{ text_field(event_form.address, class="input-xxlarge") }}
         </div>
         <div class="span4">
           <legend>Event dates</legend>
@@ -21,6 +22,7 @@
           <legend>Registration limits</legend>
           {{ date_field(event_form.reg_starts) }}
           {{ date_field(event_form.reg_ends) }}
+          {{ text_field(event_form.max_participants) }}
         </div>
       </div>
       <div class="row">
