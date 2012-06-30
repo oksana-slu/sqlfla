@@ -4,9 +4,16 @@ from sqlalchemy.ext.declarative import declared_attr
 
 from eventor import db
 from core.models import SlugMixin, CRUDMixin
+from core.utils import plural_name, underscorize
 
 
 __all__ = ['Event']
+
+plural_under = lambda name: plural_name(underscorize(name))
+lazy_cascade = {
+    'lazy': 'dynamic',
+    'cascade': 'all',
+}
 
 
 class EventStory(db.Model, CRUDMixin):
@@ -15,45 +22,30 @@ class EventStory(db.Model, CRUDMixin):
     description = db.Column(db.UnicodeText, nullable=False)
 
 
-class EventParticipant(db.Model, CRUDMixin):
-
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    event = db.relationship('Event', backref='event_participants')
-
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', lazy='dynamic', backref='participating')
-
-    descriminator = db.Column(db.String, nullable=False)
-
-    __mapper_args__ = {
-        'polymorphic_on': descriminator,
-        'polymorphic_identity': 'participant'
-    }
-
-
-class ParticipantMixin(EventParticipant):
-    __abstract__ = True
+class ParticipantMixin(CRUDMixin):
 
     @declared_attr
-    def id(cls):
-        return db.Column(db.Integer, db.ForeignKey('event_participants.id'), primary_key=True)
+    def event_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('events.id'))
+
+    @declared_attr
+    def user_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
-class EventManager(ParticipantMixin):
-    __mapper_args__ = {
-        'polymorphic_identity': 'manager'
-    }
-    # event = db.relationship('Event', backref='event_managers')
-    event = db.relationship('Event', backref='event_managers')
-    user = db.relationship('User', lazy='dynamic', backref='managing')
+class EventParticipant(db.Model, ParticipantMixin):
+    event = db.relationship('Event', backref='event_participants', **lazy_cascade)
+    user = db.relationship('User', backref='participating', **lazy_cascade)
 
 
-class EventSpeaker(ParticipantMixin):
-    __mapper_args__ = {
-        'polymorphic_identity': 'speaker'
-    }
-    event = db.relationship('Event', backref='event_speakers')
-    user = db.relationship('User', lazy='dynamic', backref='speaking')
+class EventManager(db.Model, ParticipantMixin):
+    event = db.relationship('Event', backref='event_managers', **lazy_cascade)
+    user = db.relationship('User', backref='managing', **lazy_cascade)
+
+
+class EventSpeaker(db.Model, ParticipantMixin):
+    event = db.relationship('Event', backref='event_speakers', **lazy_cascade)
+    user = db.relationship('User', backref='speaking', **lazy_cascade)
 
 
 class Event(db.Model, SlugMixin):
