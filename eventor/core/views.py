@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 from flask import abort, g, render_template
-from flask.ext.security import LoginForm, RegisterForm
 
 from . import core
 from .models import Page
@@ -8,14 +7,12 @@ from .models import Page
 
 @core.route("/")
 def index():
-    return render_template('base.html', sign_in_form=LoginForm(),
-                           sign_up_form=RegisterForm())
+    return render_template('base.html')
 
 
 @core.route('/login')
 def login():
-    return render_template('auth/login.html', sign_in_form=LoginForm(),
-                           sign_up_form=RegisterForm())
+    return render_template('auth/login.html')
 
 
 @core.route("/page/<slug>")

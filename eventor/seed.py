@@ -24,7 +24,7 @@ event_lines = [
 class Seed(Command):
 
     def create_roles(self):
-        for name in [app.config['USER_ROLE'], app.config['ADMIN_ROLE']]:
+        for name in app.config['ROLE_SET']:
             Role.get_or_create(name=name)
 
     def create_event_line(self):

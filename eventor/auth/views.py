@@ -16,5 +16,3 @@ def profile(id=None):
     else:
         user = g.user
     return render_template("auth/show.html", profile=user)
-
-

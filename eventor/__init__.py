@@ -10,7 +10,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.assets import Environment
 from flask.ext.babel import Babel
 from flask.ext.mail import Mail
-from flask.ext.security import current_user
+from flask.ext.security import LoginForm, RegisterForm, current_user
 
 from .main import vendor_js, user_js
 import settings
@@ -38,5 +38,7 @@ app.register_blueprint(events, url_prefix="/events")
 
 
 @app.before_request
-def populate_g_user():
+def setup_env():
     g.user = current_user
+    app.jinja_env.globals['sign_in_form'] = LoginForm()
+    app.jinja_env.globals['sign_up_form'] = RegisterForm()

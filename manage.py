@@ -3,8 +3,7 @@ from flask.ext.script import Manager
 from flask.ext.assets import ManageAssets
 
 from eventor import app, assets
-from eventor.commands import CreateSuperuser, InitDB
-from eventor.seed import Seed
+from eventor.commands import CreateSuperuser, InitDB, Seed
 
 manager = Manager(app)
 
