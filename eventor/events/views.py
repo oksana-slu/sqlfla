@@ -1,8 +1,9 @@
 from flask import abort, g, render_template, request, redirect, url_for
 from flask.ext.security import login_required
 from . import events
-from .forms import EventForm, EventStoryForm
-from .models import Event, EventStory
+from eventor.events.forms import EventForm, EventStoryForm
+from eventor.events.models import Event, EventStory
+from eventor.core.utils import jsonify_status_code
 
 
 @events.route('/stories')
@@ -75,3 +76,16 @@ def create_event(id):
 @login_required
 def show_event(id):
     return render_template("events/show.html", event=Event.query.get_or_404(id))
+
+
+@events.route('/<int:id>')
+@login_required
+def participate_event(id):
+    '''
+    Ajax handler for registered user
+    '''
+    event = Event.query.get_or_404(id)
+    # TODO: check if user already in participants
+    event.participants.add(g.user)
+    return jsonify_status_code({'status': 'ok'})
+
