@@ -88,7 +88,8 @@ def widget():
     matched = re_container.match(c) or abort(404)
     event_id = matched.groupdict()['id']
     response = Response(content_type="text/javascript")
-    response.data = render_template('events/widget.js', event=Event.get(event_id))
+    response.data = render_template('events/widget.js', container=c,
+                                    event=Event.get(event_id))
     return response
 
 
