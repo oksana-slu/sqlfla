@@ -1,7 +1,12 @@
 {% macro base_field(field, class="input-medium") %}
-<div class="control-group">
+<div class="control-group{% if field.errors %} error{% endif %}">
   {{ field.label(class='control-label') }}
-  <div class="controls">{{ caller(field) }}</div>
+  <div class="controls">
+    {{ caller(field) }}
+    {% if field.errors %}
+      <span class="help-inline">{{ field.errors|join(' ') }}</span>
+    {% endif %}
+  </div>
 </div>
 {% endmacro %}
 
@@ -25,14 +30,14 @@
 </div>
 {% endmacro %}
 
-{% macro base_form(form, action=".", field_class="input-medium", class="form-vertical") %}
+{% macro base_form(form, action=".", field_class="input-medium", class="form-vertical", submit) %}
 <form class="{{ class }}" method="post" action="{{ action }}">
   {{ caller(form) }}
 </form>
 {% endmacro %}
 
-{% macro form_for(form, action=".", field_class="input-medium", class="form-vertical") %}
-  {% call(form) base_form(form, action=action, field_class=field_class, class=class) %}
+{% macro form_for(form, action=".", field_class="input-medium", class="form-vertical", submit="Go!") %}
+  {% call(form) base_form(form, action=action, field_class=field_class, class=class, submit=submit) %}
       <fieldset>
         {%- for field in form -%}
           {%- if field.type in ['HiddenField', 'CSRFTokenField'] %}
@@ -48,7 +53,7 @@
           {% endif -%}
         {% endfor -%}
       </fieldset>
-    <button type="submit" class="pull-right btn btn-inverse">{{ kwargs.submit|default("Go!") }}</button>
+    <button type="submit" class="pull-right btn btn-inverse">{{ submit }}</button>
   {% endcall %}
 {% endmacro %}
 

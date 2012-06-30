@@ -28,8 +28,11 @@ class EventForm(Form):
 
 
 class EventStoryForm(Form):
-    name = TextField('Give a name for your event')
-    description = TextAreaField('Place a couple of words to describe')
+    name = TextField('Title: *', description="Give a name to your event",
+                    validators=[validators.Required()])
+    description = TextAreaField('Description: *',
+                    description="Place a couple of words to describe",
+                    validators=[validators.Required()])
 
     def save(self, commit=True):
         ev_story = EventStory()
