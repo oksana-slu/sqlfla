@@ -17,7 +17,8 @@ lazy_cascade = {
 
 
 class EventStory(db.Model, CRUDMixin):
-    # authors = db.relationship()
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    author = db.relationship('User', backref='stories', **lazy_cascade)
     name = db.Column(db.Unicode(255), nullable=False)
     description = db.Column(db.UnicodeText, nullable=False)
 
