@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from datetime import datetime
 
 from sqlalchemy.ext.declarative import declared_attr

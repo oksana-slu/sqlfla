@@ -1,9 +1,11 @@
+# -*- encoding: utf-8 -*-
 import re
 import types
-from unidecode import unidecode
-import uuid
+
 from datetime import datetime
 from os.path import abspath, dirname, join
+from unidecode import unidecode
+
 from flask import json
 
 

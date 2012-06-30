@@ -3,10 +3,12 @@ SECRET_KEY = "<change me please!>"
 CSRF_ENABLED = True
 
 SQLALCHEMY_DATABASE_URI = "postgres://nimnull@localhost/flaskchemy"
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 
 ADMIN_ROLE = 'admin'
 USER_ROLE = 'user'
+MANAGER_ROLE = 'manager'
+ROLE_SET = [ADMIN_ROLE, USER_ROLE, MANAGER_ROLE]
 
 SECURITY_CONFIRM_EMAIL = True
 SECURITY_PASSWORD_HASH = 'sha256_crypt'

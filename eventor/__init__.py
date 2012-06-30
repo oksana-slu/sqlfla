@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import os
 import sys
 
@@ -9,9 +10,9 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.assets import Environment
 from flask.ext.babel import Babel
 from flask.ext.mail import Mail
-from flask.ext.security import current_user
+from flask.ext.security import LoginForm, RegisterForm, current_user
 
-from .main import bootstrap_js, vendor_js, user_js
+from .main import vendor_js, user_js
 import settings
 
 
@@ -23,7 +24,6 @@ db = SQLAlchemy(app)
 assets = Environment(app)
 babel = Babel(app)
 
-assets.register("bootstrap_js", bootstrap_js)
 assets.register("vendor_js", vendor_js)
 assets.register("user_js", user_js)
 
@@ -38,5 +38,7 @@ app.register_blueprint(events, url_prefix="/events")
 
 
 @app.before_request
-def populate_g_user():
+def setup_env():
     g.user = current_user
+    app.jinja_env.globals['sign_in_form'] = LoginForm()
+    app.jinja_env.globals['sign_up_form'] = RegisterForm()
