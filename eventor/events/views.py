@@ -3,8 +3,11 @@ import re
 from flask import abort, g, render_template, request, redirect, Response, url_for
 from flask.ext.security import login_required
 from . import events
-from .forms import EventForm, EventStoryForm
-from .models import Event, EventStory
+from eventor.events.forms import EventForm, EventStoryForm
+from eventor.events.models import Event, EventStory
+from eventor.core.utils import jsonify_status_code
+
+re_container = re.compile('event(?P<id>\d+)Container')
 
 
 @events.route('/stories')
@@ -79,9 +82,6 @@ def show_event(id):
     return render_template("events/show.html", event=Event.query.get_or_404(id))
 
 
-re_container = re.compile('event(?P<id>\d+)Container')
-
-
 @events.route('/wdgt/')
 def widget():
     c = request.args.get('c') or abort(404)
@@ -90,3 +90,21 @@ def widget():
     response = Response(content_type="text/javascript")
     response.data = render_template('events/widget.js', event=Event.get(event_id))
     return response
+
+
+@events.route('/<int:id>')
+@login_required
+def participate_event(id):
+    '''
+    Ajax handler for registered user
+    '''
+    # g.user.is_anonymous()
+    response = {'status': 'ok'}
+    event = Event.query.get_or_404(id)
+
+    if g.user in event.participants:
+        response = {'status': 'err', 'message': 'You are already registered'}
+    else:
+        event.participants.add(g.user)
+
+    return jsonify_status_code(response)
