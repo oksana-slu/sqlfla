@@ -7,7 +7,7 @@ from os.path import abspath, dirname, join
 from unidecode import unidecode
 
 from flask import json
-
+from flask import current_app
 
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')

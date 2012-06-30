@@ -7,7 +7,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask.ext.sqlalchemy import orm
 
 from eventor import db
-from .utils import plural_name, slugify, underscorize
+from eventor.core.utils import plural_name, slugify, underscorize
 
 
 def raise_value(text):
