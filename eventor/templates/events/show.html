@@ -4,8 +4,8 @@
 {% block content %}
   <h2>{{ self.title() }}<small>Story: <a href="{{ url_for('.show_story', id=event.storyline.id) }}">{{ event.storyline.name }}</a></small></h2>
   <div class="row event">
-    <div class="span5">{{ event.description }}</div>
-    <div class="span5">
+    <div class="span7">{{ event.description }}</div>
+    <div class="span3">
       <h3>Event schedule</h3>
       <dl>
         <dt>Start:</dt>
@@ -22,28 +22,36 @@
       </dl>
     </div>
   </div>
-  <div class="row participants">
-    <div class="span5">
-      <h3>Event participants ({{ event.participants|length() }})</h3>
-      <colgroup>
-        <col>
-          <ul>
-          {% for participant in event.participants %}
-            <li>{{ participant.full_name }} </li>
-          {% endfor %}
-          </ul>
-        </col>
-        <col>
-          <ul>
-          {% for participant in event.participants %}
-            <li>{{ participant.full_name }} </li>
-          {% endfor %}
-          </ul>
-        </col>
-        <col></col>
-      </colgroup>
 
+  <div class="row">
+    <div class="span5"><h3>Event participants ({{ event.participants|length() }})</h3></div>
+    <div class="span5">
+      <div class="btn-group" data-toggle="buttons-radio">
+        <button class="btn">Approved</button>
+        <button class="btn active">Awaiting</button>
+        <button class="btn">Declined</button>
+      </div>
     </div>
   </div>
+
+  <div class="row participants">
+    <div class="row">
+      <div class="span5">
+        <ul class="nav">
+          {% for participant in event.participants %}
+            <li>{{ participant.full_name }} </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="span5">
+        <ul class="nav">
+          {% for participant in event.participants %}
+            <li>{{ participant.full_name }} </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
 
 {% endblock %}
