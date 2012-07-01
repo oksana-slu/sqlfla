@@ -34,6 +34,7 @@
         <li><a data-toggle="modal" href="#signUp">Sign Up</a></li>
         <li><a data-toggle="modal" href="#signIn">Login</a></li>
         {% else %}
+        <li><a data-toggle="modal" href="{{ url_for('auth.profile') }}">Profile</a></li>
         <li><a data-toggle="modal" href="#signIn">Logout</a></li>
         {% endif %}
       </ul>
