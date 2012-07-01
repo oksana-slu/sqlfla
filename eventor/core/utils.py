@@ -29,7 +29,7 @@ def jsonify_status_code(data=None, status=200):
 
 
 def json_dumps(data):
-    return json.dumps(data, indent=2, cls=CustomEncoder)
+    return json.dumps(data, indent=2, cls=CustomEncoder, encoding='utf-8')
 
 
 def plural_name(noun, language='en'):

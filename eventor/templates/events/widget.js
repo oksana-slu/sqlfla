@@ -1,6 +1,6 @@
 (function (global, oDOC, handler) {
     var head = oDOC.head || oDOC.getElementsByTagName("head");
-
+    var backendBase = "http://localhost:5000";
     function LABjsLoaded() {
       $LAB.script("https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js").wait(function() {
         var iTxtStyle = {
@@ -72,58 +72,116 @@
           'border-radius': '4px',
           'margin-left': '60px'
         };
-        var $container = $("#{{ container }}");
-          $container.css(
-            {width: 250, height: 320, border: 'solid 1px #000'}
-          ).append(
-            $('<div>').css({'margin': '3px', 'font': 'bold 11pt sans-serif'})
-              .text("{{ event.name }}!"),
-            $('<div>').css({'margin': '3px 12px', 'font': 'normal 10pt sans-serif', 'text-align': 'right'})
-              .text("{{ event.starts_at.strftime('%d.%m.%Y') }}"),
-            $('<div>')
+        (function($) {
+          // container wrapper generation
+          function getContainer($label, $field) {
+            return (function($l, $f) {
+              return $('<div>').append(
+                        // label injection
+                        $l,
+                        $('<div>').append(
+                          // field injection
+                          $f
+                        ).css(ctrlStyle)
+                      ).css(grpStyle);
+            })($label, $field);
+          }
+
+          function getInput(name) {
+            return (function(inputName) {
+              return $('<input>').attr({name: inputName, type: 'text', 'id': inputName + '_{{container}}'}).css(iTxtStyle);
+            })(name);
+          }
+
+          function getLabel(text, name) {
+            return (function(labelText, inputName) {
+              return $('<label>').text(labelText).attr({'for': inputName + '_{{container}}'}).css(iLablStyle);
+            })(text, name);
+          }
+
+          function buildContainer(content) {
+            return $("#{{ container }}").css({width: 250, height: 320, border: 'solid 1px #000'})
               .append(
-                $('<form>').attr({name: 'evForm_{{ event.id }}'})
+                $('<div>').css({'margin': '3px', 'font': 'bold 11pt sans-serif'})
+                  .text("{{ event.name }}!"),
+                $('<div>').css({'margin': '3px 12px', 'font': 'normal 10pt sans-serif', 'text-align': 'right'})
+                  .text("{{ event.starts_at.strftime('%d.%m.%Y') }}"),
+                $('<div>').html(content)
+              );
+          }
+
+          function allControls() {
+            var $emailInput = getInput('email');
+                $emailLabel = getLabel('Email:', 'email'),
+
+                $firstLable = getLabel('First Name:', 'first_name'),
+                $firstInput = getInput('first_name'),
+
+                $lastLable = getLabel('Last Name:', 'last_name'),
+                $lastInput = getInput('last_name'),
+
+                $occupeLable = getLabel('Occupation:', 'occupation'),
+                $occupeInput = getInput('occupation'),
+
+                $companyLable = getLabel('Company:', 'company'),
+                $companyInput = getInput('company');
+            return [
+              getContainer($emailLabel,$emailInput),
+              getContainer($firstLable, $firstInput),
+              getContainer($lastLable, $lastInput),
+              getContainer($occupeLable, $occupeInput),
+              getContainer($companyLable, $companyInput),
+              getContainer('', $('<input>').attr({type: 'submit'}).val("I'll attend").css(btnStyle))
+            ];
+          }
+
+          function getForm(controls) {
+            return (function() {
+              $form = $('<form>').attr({name: 'evForm_{{ event.id }}'});
+              for (var i in controls) {
+                $form.append(controls[i]);
+              }
+              $form.submit(function(ev) {
+                ev.preventDefault();
+                $.post(backendBase + "{{ url_for('.attend', id=event.id) }}", function(data) {
+                  console.log(data);
+                });
+              });
+              return $form;
+            })();
+          }
+
+          $.ajaxSetup({crossDomain: true});
+          $.get(backendBase + "{{ url_for('.check_participation', id=event.id) }}", function(data) {
+            switch (data.response) {
+              case 'ok':
+                var $container = $('<div>').css({'margin': '3px', 'font': 'normal 11pt sans-serif'})
                   .append(
-                    $('<div>').append(
-                      $('<label>').text('Email:').attr({'for': 'email_{{container}}'}).css(iLablStyle),
-                      $('<div>').append(
-                        $('<input>').attr({name: 'email', type: 'text', 'id': 'email_{{container}}'}).css(iTxtStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle),
-                    $('<div>').append(
-                      $('<label>').text('First Name:').attr({'for': 'first_{{container}}'}).css(iLablStyle),
-                      $('<div>').append(
-                        $('<input>').attr({name: 'first', type: 'text', 'id': 'first_{{container}}'}).css(iTxtStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle),
-                    $('<div>').append(
-                      $('<label>').text('Last Name:').attr({'for': 'last_{{container}}'}).css(iLablStyle),
-                      $('<div>').append(
-                        $('<input>').attr({name: 'last', type: 'text', 'id': 'last_{{container}}'}).css(iTxtStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle),
-                    $('<div>').append(
-                      $('<label>').text('Occupation:').attr({'for': 'occupe_{{container}}'}).css(iLablStyle),
-                      $('<div>').append(
-                        $('<input>').attr({name: 'occupe', type: 'text', 'id': 'occupe_{{container}}'}).css(iTxtStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle),
-                    $('<div>').append(
-                      $('<label>').text('Company:').attr({'for': 'company_{{container}}'}).css(iLablStyle),
-                      $('<div>').append(
-                        $('<input>').attr({name: 'company', type: 'text', 'id': 'company_{{container}}'}).css(iTxtStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle),
-                    $('<div>').append(
-                      $('<div>').append(
-                        $('<input>').attr({type: 'submit'}).val("I'll attend").css(btnStyle)
-                      ).css(ctrlStyle)
-                    ).css(grpStyle)
+                    $('<div>').text('Are you ' + data.txt.first + ' ' + data.txt.last + '?'),
+                    getForm([getContainer('', $('<input>').attr({type: 'submit'}).val("I'll attend").css(btnStyle))])
+                  );
 
-                  )
-              )
-          );
+                buildContainer($container);
 
+                break;
+              case 'err':
+                switch (data.txt) {
+                  case 'already_registered':
+                  ///
+                    break;
+                  case 'not_registered':
+                    buildContainer(getForm(allControls()));
+                    break;
+                }
+                break;
+            }
+          }, 'jsonp');
+          // widget rendering
+      // server interaction
+        $emailInput.focusout(function(ev) {
+          console.log(ev.currentTarget);
+        });
+        })(jQuery);
       });
     }
 
@@ -146,7 +204,7 @@
             scriptdone = true;
             LABjsLoaded();
         };
-        scriptElem.src = "http://localhost:5000/static/js/vendor/LAB.min.js";
+        scriptElem.src = backendBase + "/static/js/vendor/LAB.min.js";
         head.insertBefore(scriptElem, head.firstChild);
     }, 0);
 

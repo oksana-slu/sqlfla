@@ -5,7 +5,7 @@ import sys
 app_path = os.path.abspath(os.path.dirname(__file__))
 app_path in sys.path or sys.path.insert(0, app_path)
 
-from flask import Flask, g
+from flask import Flask, g, send_from_directory
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.assets import Environment
 from flask.ext.babel import Babel
@@ -42,3 +42,14 @@ def setup_env():
     g.user = current_user
     app.jinja_env.globals['sign_in_form'] = LoginForm()
     app.jinja_env.globals['sign_up_form'] = RegisterForm()
+
+
+@app.route('/crossdomain.xml')
+def crossdomain():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'crossdomain.xml', mimetype='text/xml')
+
+
+@app.after_request
+def inject_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response

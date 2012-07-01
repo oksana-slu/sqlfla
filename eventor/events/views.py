@@ -2,10 +2,14 @@
 import re
 from flask import abort, g, render_template, request, redirect, Response, url_for
 from flask.ext.security import login_required
+
+from eventor import db
+from eventor.core.utils import jsonify_status_code, json_dumps
+
 from . import events
-from eventor.events.forms import EventForm, EventStoryForm
-from eventor.events.models import Event, EventStory
-from eventor.core.utils import jsonify_status_code
+from .forms import EventForm, EventStoryForm
+from .models import Event, EventStory
+
 
 re_container = re.compile('event(?P<id>\d+)Container')
 
@@ -93,19 +97,34 @@ def widget():
     return response
 
 
-@events.route('/<int:id>')
-@login_required
-def participate_event(id):
-    '''
-    Ajax handler for registered user
-    '''
+@events.route('/check_participation/<int:id>')
+def check_participation(id):
+    """ Ajax handler for registered user
+    """
     # g.user.is_anonymous()
-    response = {'status': 'ok'}
+    callback = request.args.get('callback', 'callback')
+    response = {'response': 'ok', 'msg': 'registered'}
     event = Event.query.get_or_404(id)
 
-    if g.user in event.participants:
-        response = {'status': 'err', 'message': 'You are already registered'}
+    if g.user.is_anonymous():
+        response = {'response': 'err', 'txt': 'not_registered'}
+    elif g.user in event.participants:
+        response = {'response': 'err', 'txt': 'already_registered'}
     else:
-        event.participants.add(g.user)
+        response = {'response': 'ok',
+                    'txt': {'first': g.user.first_name,
+                            'last': g.user.last_name}}
+    http_response = Response(content_type='text/javascript')
+    http_response.data = "{}({})".format(callback, json_dumps(response))
+    return http_response
 
-    return jsonify_status_code(response)
+
+@events.route('/attend/<int:id>', methods=['POST'])
+def attend(id):
+    event = Event.get(id)
+    if g.user.is_anonymous():
+        pass
+    else:
+        event.participants.append(g.user)
+        db.session.commit()
+    return jsonify_status_code({'response': 'ok', 'txt': 'You were saved as an event attendee'})
