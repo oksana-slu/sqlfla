@@ -9,9 +9,16 @@ from eventor.auth.models import User
 from eventor.core.utils import jsonify_status_code, json_dumps
 
 from . import events
+<<<<<<< HEAD
 from .forms import EventForm, EventStoryForm
 from .models import Event, EventStory
 
+=======
+from eventor.events.forms import EventForm, EventStoryForm
+from eventor.events.models import Event, EventStory
+from eventor.core.utils import jsonify_status_code
+from eventor import app
+>>>>>>> 79a721a25553c4137d48be81a32f78d9170b4a6c
 
 re_container = re.compile('event(?P<id>\d+)Container')
 
@@ -107,6 +114,7 @@ def check_participation(id):
     # g.user.is_anonymous()
     callback = request.args.get('callback', 'callback')
     response = {'response': 'ok', 'msg': 'registered'}
+
     event = Event.query.get_or_404(id)
 
     if g.user.is_anonymous():
