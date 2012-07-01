@@ -6,6 +6,7 @@ from . import events
 from eventor.events.forms import EventForm, EventStoryForm
 from eventor.events.models import Event, EventStory
 from eventor.core.utils import jsonify_status_code
+from eventor import app
 
 re_container = re.compile('event(?P<id>\d+)Container')
 
@@ -118,8 +119,8 @@ def participate_event_new_user(id):
     Ajax handler for not registered user
     '''
     event = Event.query.get_or_404(id)
-    user = User.create(request.form)
-
+    #user = User.create(request.form)
+    user = app.security.datastore.create_user(request.form)
     event.participants.add(user)
 
     response = {'status': 'ok',
