@@ -143,9 +143,9 @@
               }
               $form.submit(function(ev) {
                 ev.preventDefault();
-                $.post(backendBase + "{{ url_for('.attend', id=event.id) }}", $form.serialize(), function(data) {
+                $.get(backendBase + "{{ url_for('.attend', id=event.id) }}", $form.serialize(), function(data) {
                   console.log(data);
-                });
+                }, 'jsonp');
               });
               return $form;
             })();

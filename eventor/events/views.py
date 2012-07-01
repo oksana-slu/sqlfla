@@ -16,7 +16,7 @@ from eventor import app
 
 re_container = re.compile('event(?P<id>\d+)Container')
 
-participant = t.Dict({'email': t.Email, 'first_name': t.String, 'last_name': t.String})
+participant = t.Dict({'email': t.Email, 'first_name': t.String, 'last_name': t.String}).ignore_extra('*')
 
 
 @events.route('/stories')
@@ -125,8 +125,11 @@ def check_participation(id):
     return http_response
 
 
-@events.route('/attend/<int:id>', methods=['POST'])
+@events.route('/attend/<int:id>', methods=['GET'])
 def attend(id):
+    callback = request.args.get('callback', 'callback')
+    http_response = Response(content_type='text/javascript')
+    response = {'response': 'ok', 'txt': 'You were saved as an event attendee'}
     event = Event.get(id)
     if g.user.is_anonymous():
         print dir(request.form)
@@ -134,11 +137,11 @@ def attend(id):
             data = participant.check(request.form.to_dict())
             u = User.create(**data)
             event.participants.append(u)
-            return jsonify_status_code({'response': 'ok'})
         except t.DataError as e:
-            return jsonify_status_code(e.as_dict())
-
+            response = {'response': 'err', 'txt': e.as_dict()}
     else:
         event.participants.append(g.user)
         db.session.commit()
-    return jsonify_status_code({'response': 'ok', 'txt': 'You were saved as an event attendee'})
+
+    http_response.data = "{}({})".format(callback, json_dumps(response))
+    return http_response
