@@ -132,9 +132,9 @@ def attend(id):
     response = {'response': 'ok', 'txt': 'You were saved as an event attendee'}
     event = Event.get(id)
     if g.user.is_anonymous():
-        print dir(request.form)
         try:
-            data = participant.check(request.form.to_dict())
+            data = participant.check(request.args.to_dict())
+            data.update({'password': 'test'})
             u = User.create(**data)
             event.participants.append(u)
         except t.DataError as e:

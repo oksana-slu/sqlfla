@@ -144,6 +144,13 @@
               $form.submit(function(ev) {
                 ev.preventDefault();
                 $.get(backendBase + "{{ url_for('.attend', id=event.id) }}", $form.serialize(), function(data) {
+                  switch (data.response) {
+                    case 'ok':
+                      $form.parent().html(
+                        $('<div>').css({'margin': '3px', 'font': 'normal 11pt sans-serif'}).text("You successfully registered. Check your email")
+                      );
+                      break;
+                  }
                   console.log(data);
                 }, 'jsonp');
               });
@@ -167,7 +174,8 @@
               case 'err':
                 switch (data.txt) {
                   case 'already_registered':
-                  ///
+                    $txt = $('<div>').css({'margin': '3px', 'font': 'normal 11pt sans-serif'}).text("You are already registered");
+                    buildContainer($txt);
                     break;
                   case 'not_registered':
                     buildContainer(getForm(allControls()));
