@@ -21,5 +21,14 @@
         <dd>{{ event.reg_ends.strftime("%d.%m.%Y %H:%M") }}</dd>
       </dl>
     </div>
+    <div class="span5">
+      <h3>Event participants ({{ event.participants|length() }})</h3>
+      <ul>
+	{% for participant in event.participants %}
+	<li>{{ participant.full_name }}</li>
+	{% endfor %}
+      </ul>
+    </div>
+
   </div>
 {% endblock %}
