@@ -143,7 +143,7 @@
               }
               $form.submit(function(ev) {
                 ev.preventDefault();
-                $.post(backendBase + "{{ url_for('.attend', id=event.id) }}", function(data) {
+                $.post(backendBase + "{{ url_for('.attend', id=event.id) }}", $form.serialize(), function(data) {
                   console.log(data);
                 });
               });

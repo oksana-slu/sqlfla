@@ -1,9 +1,11 @@
 # -*- encoding: utf-8 -*-
 import re
+import trafaret as t
 from flask import abort, g, render_template, request, redirect, Response, url_for
 from flask.ext.security import login_required
 
 from eventor import db
+from eventor.auth.models import User
 from eventor.core.utils import jsonify_status_code, json_dumps
 
 from . import events
@@ -13,6 +15,7 @@ from .models import Event, EventStory
 
 re_container = re.compile('event(?P<id>\d+)Container')
 
+participant = t.Dict({'email': t.Email, 'first_name': t.String, 'last_name': t.String})
 
 @events.route('/stories')
 @login_required
@@ -123,7 +126,15 @@ def check_participation(id):
 def attend(id):
     event = Event.get(id)
     if g.user.is_anonymous():
-        pass
+        print dir(request.form)
+        try:
+            data = participant.check(request.form.to_dict())
+            u = User.create(**data)
+            event.participants.append(u)
+            return jsonify_status_code({'response': 'ok'})
+        except t.DataError as e:
+            return jsonify_status_code(e.as_dict())
+
     else:
         event.participants.append(g.user)
         db.session.commit()
