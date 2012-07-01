@@ -2,7 +2,25 @@
     var head = oDOC.head || oDOC.getElementsByTagName("head");
 
     function LABjsLoaded() {
-        // do cool stuff with $LAB here
+      $LAB.script("https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js").wait(function() {
+        var $container = $("#{{ container }}");
+          $container.css(
+            {width: 250, height: 300, border: 'solid 1px #000'}
+          ).append(
+            $('<div>').css({'margin': '3px', 'font': 'bold 11pt sans-serif'})
+              .text("{{ event.name }}!")
+          ).append(
+            $('<div>').css({'margin': '3px 12px', 'font': 'normal 10pt sans-serif', 'text-align': 'right'})
+              .text("{{ event.starts_at.strftime('%d.%m.%Y') }}")
+          ).append(
+            $('<div>')
+              .append(
+                $('<form>').attr({name: 'evForm_{{ event.id }}'})
+                  .append('<input>').attr({name: 'email'})
+              )
+          );
+
+      });
     }
 
     // loading code borrowed directly from LABjs itself
