@@ -93,12 +93,13 @@ def widget():
 
 
 @events.route('/<int:id>')
-@login_required
 def participate_event(id):
     '''
     Ajax handler for registered user
     '''
-    # g.user.is_anonymous()
+    if g.user.is_anonymous():
+        abort(403)
+
     response = {'status': 'ok'}
     event = Event.query.get_or_404(id)
 
@@ -106,5 +107,21 @@ def participate_event(id):
         response = {'status': 'err', 'message': 'You are already registered'}
     else:
         event.participants.add(g.user)
+
+    return jsonify_status_code(response)
+
+
+@events.route('/<int:id>')
+def participate_event_new_user(id):
+    '''
+    Ajax handler for not registered user
+    '''
+    event = Event.query.get_or_404(id)
+    user = User.create(request.form)
+
+    event.participants.add(user)
+
+    response = {'status': 'ok',
+                'message': 'Check your inbox for compleate registration'}
 
     return jsonify_status_code(response)
