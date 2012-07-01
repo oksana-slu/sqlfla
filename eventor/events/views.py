@@ -134,9 +134,10 @@ def attend(id):
     if g.user.is_anonymous():
         try:
             data = participant.check(request.args.to_dict())
-            data.update({'password': 'test'})
+            data.update({'password': 'test', 'roles': ['user']})
             u = User.create(**data)
             event.participants.append(u)
+            db.session.commit()
         except t.DataError as e:
             response = {'response': 'err', 'txt': e.as_dict()}
     else:
