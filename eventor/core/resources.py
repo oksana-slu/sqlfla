@@ -6,6 +6,8 @@ from flask import abort, request, g
 from flask.views import MethodView
 
 from flask.ext.security import login_required
+from flask.ext.sqlalchemy import orm
+
 from eventor import db
 
 from . import http
@@ -59,7 +61,7 @@ class Resource(MethodView):
         page = page if page <= pages else pages
         page = page > 0 and page or 1
         items = objects.limit(page_size).offset((page - 1) * page_size)
-        return items, count, pages
+        return items, count, pages, page
 
     def gen_list_response(self, **kwargs):
         """if response contains objects list, this method generates
@@ -69,11 +71,12 @@ class Resource(MethodView):
                        'objects': objects list}
         """
         page = 'page' in request.args and int(request.args['page'])
-        items, total, pages = self.paginate(page, **kwargs)
+        items, total, pages, page = self.paginate(page, **kwargs)
         response = {'meta': {
                             'total': total,
-                            'pages': pages},
-                    'objects': [item.as_dict() for item in items]}
+                            'pages': pages,
+                            'page': page},
+                    'objects': [self.model_as_dict(item) for item in items]}
         return response
 
 
@@ -83,21 +86,22 @@ class ModelResource(Resource):
     model = None
     # FIXME: self validation is None
     validation = t.Dict().allow_extra('*')
+    include = ['id']
 
     def get(self, id=None):
         if id is None:
             response = self.gen_list_response()
         else:
-            response = self.get_object(id).as_dict()
+            response = self.model_as_dict(self.get_object(id))
 
         return jsonify_status_code(response)
 
     def post(self):
         data = request.json or abort(http.BAD_REQUEST)
-
+        status = http.CREATED
         try:
             data = self.validation.check(data)
-            status, response = http.CREATED, self.model.create(**data).as_dict()
+            response = self.model_as_dict(self.model.create(**data))
         except t.DataError as e:
             status, response = http.BAD_REQUEST, e.as_dict()
 
@@ -105,11 +109,11 @@ class ModelResource(Resource):
 
     def put(self, id):
         data = request.json or abort(http.BAD_REQUEST)
-
+        status = http.ACCEPTED
         try:
             data = self.validation.check(data)
             instance = self.get_object(id)
-            status, response = http.ACCEPTED, instance.update(**data).as_dict()
+            response = self.model_as_dict(instance.update(**data))
         except t.DataError as e:
             status, response = http.BAD_REQUEST, e.as_dict()
 
@@ -130,6 +134,23 @@ class ModelResource(Resource):
             on previous filters applied
         """
         return self.get_objects().filter_by(id=id).first_or_404()
+
+    def model_as_dict(self, model):
+        """ method for building dictionary for model value-properties filled
+            with data from mapped storage backend
+        """
+        # columns = self._sa_class_manager
+        # relations = [k for k in columns if isinstance(columns[k].property, orm.properties.RelationshipProperty)]
+        mapper = model.__mapper__
+        export_fields = super(self.__class__, self).include + self.include
+        columns = (p.key for p in mapper.iterate_properties if isinstance(p, orm.ColumnProperty))
+        response = {}
+        for col_name in columns:
+            if col_name in export_fields:
+                regular_name = col_name.startswith('_') and col_name[1:] or col_name
+                response[regular_name] = regular_name and getattr(model, regular_name)
+
+        return response
 
 
 class TableResource(Resource):

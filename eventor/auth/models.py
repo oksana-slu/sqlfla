@@ -7,6 +7,8 @@ from eventor import app, db
 from eventor.core.models import CRUDMixin
 # from sqlalchemy import
 
+__all__ = ['User', 'Role']
+
 users_roles = db.Table('users_roles', db.metadata,
         db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
         db.Column('roles_id', db.Integer, db.ForeignKey('roles.id')),

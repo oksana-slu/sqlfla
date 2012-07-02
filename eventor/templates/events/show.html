@@ -2,8 +2,11 @@
 
 {% set page_title = event.name %}
 {% block content %}
-  <h2>{{ self.title() }}<small>Story: <a href="{{ url_for('.show_story', id=event.storyline.id) }}">{{ event.storyline.name }}</a></small></h2>
   <div class="row event">
+    <h2 class="page-header">
+      {{ self.title() }}
+      <small>Story: <a href="{{ url_for('.show_story', id=event.storyline.id) }}">{{ event.storyline.name }}</a></small>
+    </h2>
     <div class="span7">{{ event.description }}</div>
     <div class="span3">
       <h3>Event schedule</h3>
@@ -35,23 +38,59 @@
   </div>
 
   <div class="row participants">
-    <div class="row">
-      <div class="span5">
-        <ul class="nav">
-          {% for participant in event.participants %}
-            <li>{{ participant.full_name }} </li>
-          {% endfor %}
-        </ul>
-      </div>
-      <div class="span5">
-        <ul class="nav">
-          {% for participant in event.participants %}
-            <li>{{ participant.full_name }} </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
   </div>
+  <script type="text/template" id="usersView">
+    <ul>
+      <% _(users).each(function(user) { %>
+        <li>
+            <%= user.first_name + ' ' + user.last_name %>
+            <a href="#" rel="tooltip" title="Approve" data-value='approve'><i class="icon-ok-sign"></i></a>
+            <a href="#" rel="tooltip" title="Decline" data-value='decline'><i class="icon-remove-sign"></i></a>
+        </li>
+      <% }) %>
+    </ul>
+  </script>
+
+  <script type="text/javascript">
+    var UsersView = Backbone.View.extend({
+      className: 'span5',
+      template: _.template($("#usersView").html()),
+
+      events: {
+        "click a": "resolveParticipant"
+      },
+
+      initialize: function(options) {
+        this.collection.on('reset', _.bind(function() {
+          this.render();
+        }, this));
+        this.collection.fetch();
+      },
+
+      render: function() {
+        this.$el.hide();
+        this.$el.html(this.template({users: this.collection.toJSON()}));
+        this.$el.find("a[rel='tooltip']").tooltip();
+        this.$el.fadeIn();
+        return this.el;
+      },
+
+      resolveParticipant: function(ev) {
+        ev.preventDefault();
+        console.log($(ev.currentTarget).data('value'));
+      }
+
+    })
 
 
+    var Users = Backbone.Collection.extend({
+          model: Backbone.Model,
+          url: "{{ url_for('.participants', event=event.id) }}",
+          parse: function(response) {
+            this.meta = response.meta;
+            return response.objects;
+          }
+        }),
+        usersView = new UsersView({collection: new Users(), el: $(".participants")});
+  </script>
 {% endblock %}

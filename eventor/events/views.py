@@ -88,7 +88,8 @@ def create_event(id):
 @events.route('/<int:id>')
 @login_required
 def show_event(id):
-    return render_template("events/show.html", event=Event.query.get_or_404(id))
+    event = Event.query.get_or_404(id)
+    return render_template("events/show.html", event=event)
 
 
 @events.route('/wdgt/')

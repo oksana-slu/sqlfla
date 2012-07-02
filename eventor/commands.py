@@ -7,7 +7,7 @@ from eventor import app, db
 
 from auth.models import Role
 
-from core.models import Page
+# from core.models import Page
 from events.models import EventStory
 
 
@@ -42,7 +42,9 @@ class CreateSuperuser(Command):
             print("Creating user: {} with password: {}".format(email, password))
             app.security.datastore.create_user(email=email, password=password,
                                                roles=[admin_role],
-                                               confirmed_at=datetime.utcnow())
+                                               confirmed_at=datetime.utcnow(),
+                                               first_name=u'Демо',
+                                               last_name=u'Демович')
 
     def get_admin_role(self):
         role_name = app.config['ADMIN_ROLE']
@@ -87,14 +89,14 @@ class Seed(Command):
         for event_story in event_stories:
             EventStory.create(**event_story)
 
-    def create_pages(self):
-        for page_data in pages:
-            page = Page.create(**page_data)
-            print("created page {0.name}".format(page))
+    # def create_pages(self):
+    #     for page_data in pages:
+    #         page = Page.create(**page_data)
+    #         print("created page {0.name}".format(page))
 
     def run(self):
         db.drop_all()
         db.create_all()
         self.create_roles()
-        self.create_pages()
+        # self.create_pages()
         self.create_event_line()

@@ -61,7 +61,7 @@ class CRUDMixin(object):
 
         return self
 
-    def as_dict(self, exclude=['password']):
+    def as_dict(self, exclude=['password'], include=['*']):
         """ method for building dictionary for model value-properties filled
             with data from mapped storage backend
         """
@@ -103,6 +103,6 @@ class SlugMixin(CRUDMixin):
                             self.name)
 
 
-class Page(db.Model, SlugMixin):
-    content = db.Column(db.UnicodeText)
-    auth_required = db.Column(db.Boolean, default=False, nullable=False)
+# class Page(db.Model, SlugMixin):
+#     content = db.Column(db.UnicodeText)
+#     auth_required = db.Column(db.Boolean, default=False, nullable=False)
