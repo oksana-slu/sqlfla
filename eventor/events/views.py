@@ -37,15 +37,6 @@ def create_story():
     return render_template('events/create_story.html', story_form=story_form)
 
 
-@events.route('/stories/<int:id>')
-@login_required
-def show_story(id):
-    story = EventStory.query.get_or_404(id)
-    story.author == g.user or abort(403)
-    return render_template('events/show_story.html',
-                    story=story)
-
-
 @events.route('/stories/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_story(id):
@@ -54,7 +45,7 @@ def edit_story(id):
 
     if request.form and story_form.validate():
         story_form.save(story)
-        return redirect(url_for('.show_story', id=story.id))
+        return redirect(url_for('.list_stories'))
 
     return render_template('events/edit_story.html', story_form=story_form,
                            story=story)

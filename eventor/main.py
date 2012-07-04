@@ -19,13 +19,15 @@ vendor = {
 user = {
     'prefix': "coffee/",
     'files': [
-        'common.coffee'
+        'common.coffee',
+        'participants.coffee',
+        'router.coffee'
     ]
 }
 
 user_js = Bundle(
     *[user['prefix'] + script for script in user['files']],
-    filters="coffeescript, uglifyjs",
+    filters="coffeescript",
     output="gen/user.js",
     debug=False
 )

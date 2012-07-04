@@ -16,6 +16,12 @@
 
 body {
     background: url(../img/redox_01.png);
+
+    h2 {
+       small {
+            margin-left: 15px;
+    }
+}
 }
 
 body, p {
@@ -31,10 +37,10 @@ body, p {
     }
 }
 
-h2 {
-    small {
-        margin-left: 15px;
-    }
+
+
+a [class^="icon-"], a [class*=" icon-"] {
+    text-decoration: none;
 }
 
 form.story {
@@ -42,21 +48,41 @@ form.story {
         height: 150px;
     }
 }
-.font_12pt {
-    font-size: 12pt;
-}
 
 ul.nav.menu {
     font-size: 1.1em;
 }
 
+.font_12pt {
+    font-size: 12pt;
+}
+
+.story {
+    .controls a {
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+}
+
 .events {
-    margin-top: 20px;
+    .event {
+        margin-left: 20px;
+    }
     table {
         td:nth-child(2) { width: 50px; }
         td:nth-child(3) { width: 100px; }
         td:nth-child(4) { width: 100px; }
         td:nth-child(5) { width: 50px; }
+    }
+}
+
+.event {
+    .poster {
+        display: block;
+        width: 156px;
+    }
+    .description {
+        vertical-align: top;
     }
 }
 

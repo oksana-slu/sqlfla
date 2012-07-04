@@ -15,3 +15,5 @@ $ ->
 
   $("form").on 'submit', (ev) ->
     $(ev.currentTarget).find("[type='submit']").button 'loading'
+
+  $("[rel='tooltip']").tooltip()

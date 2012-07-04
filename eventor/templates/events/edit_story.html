@@ -1,6 +1,6 @@
 {% extends "base_auth.html" %}
 {% from "_macro.html" import form_for %}
-{% set page_title = "Editing {} story".format(story.name) %}
+{% set page_title = "Editing: " + story.name %}
 
 {% block content %}
   {{ super() }}
