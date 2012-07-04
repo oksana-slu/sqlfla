@@ -12,8 +12,6 @@ vendor = {
         'handlebars-1.0.0.beta.6.js',
         'less-1.3.0.js',
         'bootstrap.js'
-#        'require-1.0.7.js',
-#        'require-text-1.0.7.js',
     ]
 }
 
@@ -28,7 +26,8 @@ user = {
 user_js = Bundle(
     *[user['prefix'] + script for script in user['files']],
     filters="coffeescript, uglifyjs",
-    output="gen/user.js"
+    output="gen/user.js",
+    debug=False
 )
 
 vendor_js = Bundle(

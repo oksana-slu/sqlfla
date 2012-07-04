@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from datetime import datetime
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.declarative import declared_attr
+# from sqlalchemy.ext.associationproxy import association_proxy
+# from sqlalchemy.ext.declarative import declared_attr
 
 from eventor import db
 # from eventor.auth.models import User
 
-from eventor.core.models import SlugMixin, CRUDMixin
+from eventor.core.models import CRUDMixin
 from eventor.core.utils import plural_name, underscorize
 
 
@@ -49,7 +49,8 @@ event_participants = db.Table('events_participant', db.metadata,
 )
 
 
-class Event(db.Model, SlugMixin):
+class Event(db.Model, CRUDMixin):
+    name = db.Column(db.Unicode(255), nullable=False)
     description = db.Column(db.UnicodeText)
     starts_at = db.Column(db.DateTime, nullable=False)
     ends_at = db.Column(db.DateTime, nullable=False)

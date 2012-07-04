@@ -17,6 +17,7 @@
     {% assets "user_js" %}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/require-1.0.7.js') }}"></script>
   </head>
   <body>
     {% if g.user.is_anonymous() %}
@@ -49,7 +50,7 @@
     </div>
     <div class="container">
       {% block content %}
-      <div class="well" style="text-align: center; vertical-align: middle;">
+      <div style="text-align: center; vertical-align: middle;">
         <p>Some nice text will be placed here</p>
       </div>
       {% endblock %}
@@ -57,11 +58,14 @@
     {% endblock %}
     <!-- modals -->
   </body>
+  {% block extra_js %}
   <script type="text/javascript">
+    USERS_URL = "{{ url_for('events.participants') }}";
   (function($) {
     $(function() {
       $("ul.nav li.active i[class*='icon']").addClass("icon-white");
     });
   })(jQuery);
   </script>
+  {% endblock %}
 </html>

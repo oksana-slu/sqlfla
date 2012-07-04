@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-from flask import abort, g, render_template
+from flask import abort, render_template, current_app
+from jinja2.exceptions import TemplateNotFound
 
 from . import core
 # from .models import Page
@@ -13,6 +14,17 @@ def index():
 @core.route('/login')
 def login():
     return render_template('auth/login.html')
+
+
+@core.route('/templates/<path:template>')
+@core.route('/templates/')
+def template(template=None):
+    template or abort(404)
+
+    try:
+        return render_template(current_app.jinja_env.get_template(template))
+    except TemplateNotFound:
+        abort(404)
 
 
 # @core.route("/page/<slug>")

@@ -103,6 +103,6 @@ class SlugMixin(CRUDMixin):
                             self.name)
 
 
-# class Page(db.Model, SlugMixin):
-#     content = db.Column(db.UnicodeText)
-#     auth_required = db.Column(db.Boolean, default=False, nullable=False)
+class Page(db.Model, SlugMixin):
+    content = db.Column(db.UnicodeText)
+    auth_required = db.Column(db.Boolean, default=False, nullable=False)

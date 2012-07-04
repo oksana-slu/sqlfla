@@ -56,7 +56,7 @@ class Resource(MethodView):
 
     def paginate(self, page=1, page_size=20, **kwargs):
         objects = self.get_objects(**kwargs)
-        count = objects.count() or abort(http.NO_CONTENT)
+        count = objects.count()
         pages = int(count / page_size) + (count % page_size and 1)
         page = page if page <= pages else pages
         page = page > 0 and page or 1

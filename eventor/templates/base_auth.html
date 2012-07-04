@@ -5,7 +5,7 @@
 <div class="container">
   <div class="row">
     <div class="span2">
-      <ul class="nav nav-list" style="padding-top: 8px;">
+      <ul class="nav nav-list menu" style="padding-top: 8px;">
         <li class="nav-header">general</li>
         {% call menu_el('auth.profile') %}
           <a href="{{ url_for('auth.profile') }}">
@@ -14,7 +14,7 @@
         {% endcall %}
         {% call menu_el('events.list_stories') %}
           <a href="{{ url_for('events.list_stories') }}">
-            <i class="icon-calendar"></i> Event's stories
+            <i class="icon-table"></i> Event's stories
           </a>
         {% endcall %}
         <li>
