@@ -128,7 +128,8 @@ class Seed(Command):
     def create_story(self, author):
         for event_line in event_lines:
             event_line['author'] = author
-            EventStory.create(**event_line)
+            story = EventStory.create(**event_line)
+            return story
 
     def create_pages(self):
         for page_data in pages:
