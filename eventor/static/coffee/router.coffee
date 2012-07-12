@@ -3,15 +3,17 @@
 class EventorRouter extends Backbone.Router
   routes:
     "events/new":   "nothing"
-    "events/:id":   "showEvent"
+    "events/:id/?page=:page":   "showEvent"
+    "events/:id/":   "showEvent"
     "events/*action": "nothing"
 
   nothing: (options) ->
     console.log "EventorRouter#nothing", options
 
-  showEvent: (eventId) ->
+  showEvent: (eventId, page=1) ->
     usersView = new UsersView
       event: eventId
+      page: page
       el: $(".participants")
 
 $ ->

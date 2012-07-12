@@ -76,7 +76,7 @@ def create_event(id):
                            event_form=form)
 
 
-@events.route('/<int:id>')
+@events.route('/<int:id>/')
 @login_required
 def show_event(id):
     event = Event.query.get_or_404(id)
