@@ -26,7 +26,7 @@ var Users, UsersView, usersTemplate,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-usersTemplate = _.template("<ul class=\"unstyled\">\n  <div class=\"pagination pagination-centered\">\n    <ul>\n      <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n      <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n        <a class=\"numb-page\" href=\"?page=<%= page %>\" data-value=\"<%= page %>\"><%= page %></a>\n      </li>\n      <% }) %>\n    </ul>\n  </div>\n  <% _(users).each(function(user) { %>\n    <li>\n        <%= user.first_name + ' ' + user.last_name %>\n        <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Approve\" data-value='approve'><i class=\"icon-ok-sign\"></i></a>\n        <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Decline\" data-value='decline'><i class=\"icon-remove-sign\"></i></a>\n    </li>\n  <% }) %>\n  <div class=\"pagination pagination-centered\">\n    <ul>\n      <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n      <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n        <a class=\"numb-page\" href=\"?page=<%= page %>\" data-value=\"<%= page %>\"><%= page %></a>\n      </li>\n      <% }) %>\n    </ul>\n  </div>\n</ul>");
+usersTemplate = _.template("<div class=\"row\">\n  <div class=\"span5\"><h3>Event participants (<%= paginations['total'] %>)</h3></div>\n  <div class=\"span5\">\n    <div class=\"btn-group\" data-toggle=\"buttons-radio\">\n      <button class=\"btn <% if (p_type == 1) { %> active <% } %>\" data-value=1>Approved</button>\n      <button class=\"btn <% if (p_type == 0) { %> active <% } %>\" data-value=0>Awaiting</button>\n      <button class=\"btn <% if (p_type == 2) { %> active <% } %>\" data-value=2>Declined</button>\n    </div>\n  </div>\n</div>\n<div class=\"row\">\n  <ul class=\"unstyled\">\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"#\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n    <% _(users).each(function(user) { %>\n      <li>\n          <%= user.first_name + ' ' + user.last_name %>\n          <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Approve\" data-value='approve'><i class=\"icon-ok-sign\"></i></a>\n          <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Decline\" data-value='decline'><i class=\"icon-remove-sign\"></i></a>\n      </li>\n    <% }) %>\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"?page=<%= page %>\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n  </ul>\n</div>");
 
 Users = (function(_super) {
 
@@ -65,20 +65,23 @@ UsersView = (function(_super) {
 
   UsersView.prototype.events = {
     "click a.resolve": "resolveParticipant",
-    "click a.numb-page": "numbPage"
+    "click a.numb-page": "numbPage",
+    "click button.btn": "typeFilter"
   };
 
   UsersView.prototype.initialize = function(options) {
     var _this = this;
     this.event = options.event;
+    this.p_type = options.p_type;
     console.log(options.el);
     this.collection.on('reset', function() {
       return _this.render();
     });
     return this.collection.fetch({
       data: {
-        event: options.event,
-        page: options.page
+        event: this.event,
+        page: options.page,
+        p_type: this.p_type
       }
     });
   };
@@ -86,7 +89,8 @@ UsersView = (function(_super) {
   UsersView.prototype.render = function() {
     this.$el.html(this.template({
       users: this.collection.toJSON(),
-      paginations: this.collection.meta
+      paginations: this.collection.meta,
+      p_type: this.p_type
     }));
     console.log(this.el);
     this.$el.find("a[rel='tooltip']").tooltip();
@@ -109,7 +113,18 @@ UsersView = (function(_super) {
         page: page
       }
     });
-    return history.pushState(null, null, "?page=" + page);
+    return history.pushState(null, null, "?page=" + page + "&p_type=" + this.p_type);
+  };
+
+  UsersView.prototype.typeFilter = function(ev) {
+    this.p_type = $(ev.currentTarget).data('value');
+    this.collection.fetch({
+      data: {
+        event: this.event,
+        p_type: this.p_type
+      }
+    });
+    return history.pushState(null, null, "?page=1&p_type=" + this.p_type);
   };
 
   return UsersView;
@@ -132,7 +147,7 @@ EventorRouter = (function(_super) {
 
   EventorRouter.prototype.routes = {
     "events/new": "nothing",
-    "events/:id/?page=:page": "showEvent",
+    "events/:id/?page=:page&p_type=:p_type": "showEvent",
     "events/:id/": "showEvent",
     "events/*action": "nothing"
   };
@@ -141,14 +156,18 @@ EventorRouter = (function(_super) {
     return console.log("EventorRouter#nothing", options);
   };
 
-  EventorRouter.prototype.showEvent = function(eventId, page) {
+  EventorRouter.prototype.showEvent = function(eventId, page, p_type) {
     var usersView;
     if (page == null) {
       page = 1;
     }
+    if (p_type == null) {
+      p_type = 0;
+    }
     return usersView = new UsersView({
       event: eventId,
       page: page,
+      p_type: p_type,
       el: $(".participants")
     });
   };
