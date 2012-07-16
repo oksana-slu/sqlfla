@@ -26,7 +26,7 @@ var Users, UsersView, usersTemplate,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-usersTemplate = _.template("<div class=\"row\">\n  <div class=\"span5\"><h3>Event participants (<%= paginations['total'] %>)</h3></div>\n  <div class=\"span5\">\n    <div class=\"btn-group\" data-toggle=\"buttons-radio\">\n      <button class=\"btn <% if (p_type == 1) { %> active <% } %>\" data-value=1>Approved</button>\n      <button class=\"btn <% if (p_type == 0) { %> active <% } %>\" data-value=0>Awaiting</button>\n      <button class=\"btn <% if (p_type == 2) { %> active <% } %>\" data-value=2>Declined</button>\n    </div>\n  </div>\n</div>\n<div class=\"row\">\n  <ul class=\"unstyled\">\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"#\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n    <% _(users).each(function(user) { %>\n      <li>\n          <%= user.first_name + ' ' + user.last_name %>\n          <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Approve\" data-value='approve'><i class=\"icon-ok-sign\"></i></a>\n          <a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Decline\" data-value='decline'><i class=\"icon-remove-sign\"></i></a>\n      </li>\n    <% }) %>\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"?page=<%= page %>\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n  </ul>\n</div>");
+usersTemplate = _.template("<div class=\"row\">\n  <div class=\"span5\"><h3>Event participants (<%= paginations['total'] %>)</h3></div>\n  <div class=\"span5\">\n    <div class=\"btn-group\" data-toggle=\"buttons-radio\">\n      <button class=\"btn <% if (p_type == 1) { %> active <% } %>\" data-value=1>Approved</button>\n      <button class=\"btn <% if (p_type == 0) { %> active <% } %>\" data-value=0>Awaiting</button>\n      <button class=\"btn <% if (p_type == 2) { %> active <% } %>\" data-value=2>Declined</button>\n    </div>\n  </div>\n</div>\n<div class=\"row\">\n  <ul class=\"unstyled\">\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"#\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n    <% _(users).each(function(user) { %>\n      <li data-value='<%= user.id %>'>\n          <%= user.first_name + ' ' + user.last_name %>\n          <% if (p_type == 0 || p_type == 2) { %><a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Approve\" data-value='1'><i class=\"icon-ok-sign\"></i></a><% } %>\n          <% if (p_type == 0 || p_type == 1) { %><a class=\"resolve\" href=\"#\" rel=\"tooltip\" title=\"Decline\" data-value='2'><i class=\"icon-remove-sign\"></i></a><% } %>\n      </li>\n    <% }) %>\n    <div class=\"pagination pagination-centered\">\n      <ul>\n        <% _.each(_.range(1, paginations['pages'] + 1), function(page) { %>\n        <li <% if (page == paginations['page']) { %> class=\"active\" <% } %> >\n          <a class=\"numb-page\" href=\"?page=<%= page %>\" data-value=\"<%= page %>\"><%= page %></a>\n        </li>\n        <% }) %>\n      </ul>\n    </div>\n  </ul>\n</div>");
 
 Users = (function(_super) {
 
@@ -99,8 +99,15 @@ UsersView = (function(_super) {
   };
 
   UsersView.prototype.resolveParticipant = function(ev) {
+    var p_type, user, user_id;
     ev.preventDefault();
-    return console.log($(ev.currentTarget).data('value'));
+    console.log($(ev.currentTarget).data('value'));
+    p_type = $(ev.currentTarget).data('value');
+    user_id = $(ev.currentTarget.parentElement).data('value');
+    user = this.collection.get(user_id);
+    return user.save({
+      p_type: p_type
+    });
   };
 
   UsersView.prototype.numbPage = function(ev) {

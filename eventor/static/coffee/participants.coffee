@@ -23,10 +23,10 @@ usersTemplate = _.template("""
       </ul>
     </div>
     <% _(users).each(function(user) { %>
-      <li>
+      <li data-value='<%= user.id %>'>
           <%= user.first_name + ' ' + user.last_name %>
-          <a class="resolve" href="#" rel="tooltip" title="Approve" data-value='approve'><i class="icon-ok-sign"></i></a>
-          <a class="resolve" href="#" rel="tooltip" title="Decline" data-value='decline'><i class="icon-remove-sign"></i></a>
+          <% if (p_type == 0 || p_type == 2) { %><a class="resolve" href="#" rel="tooltip" title="Approve" data-value='1'><i class="icon-ok-sign"></i></a><% } %>
+          <% if (p_type == 0 || p_type == 1) { %><a class="resolve" href="#" rel="tooltip" title="Decline" data-value='2'><i class="icon-remove-sign"></i></a><% } %>
       </li>
     <% }) %>
     <div class="pagination pagination-centered">
@@ -90,7 +90,11 @@ class UsersView extends Backbone.View
   resolveParticipant: (ev) ->
     ev.preventDefault()
     console.log $(ev.currentTarget).data('value')
+    p_type = $(ev.currentTarget).data('value')
 
+    user_id = $(ev.currentTarget.parentElement).data('value')
+    user = @collection.get(user_id)
+    user.save({p_type: p_type})
 
   numbPage: (ev) ->
     ev.preventDefault()

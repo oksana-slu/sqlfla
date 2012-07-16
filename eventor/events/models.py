@@ -66,3 +66,12 @@ class Event(db.Model, CRUDMixin):
                     backref='participant_for', passive_deletes=True)
     managers = db.relationship('User', secondary=events_managers,
                     backref='manager_for', passive_deletes=True)
+
+
+#class EventsParticipant(db.Model):
+#    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+#    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
+#    p_type = db.Column(db.Integer, default=0)
+#    event = db.relationship(Event,
+#                backref=db.backref("events_participant", cascade="all, delete-orphan"))
+#    user = db.relationship("User")
