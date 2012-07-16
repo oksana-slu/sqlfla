@@ -18,11 +18,12 @@ class Participants(ModelResource):
 
     def get_objects(self):
         args = request.args.to_dict()
+        p_type = int(args['p_type']) if 'p_type' in args else  0
         if 'event' in args:
             # for user in User.query.join('participant_for').filter_by(id=args['event']):
             return User.query.join(event_participants)\
                         .filter(event_participants.c.event_id == args['event'],
-                                event_participants.c.p_type == 0)
+                                event_participants.c.p_type == p_type)
                 # if 'event' in args:
         else:
             return super(Participants, self).get_objects().filter_by(id=-1)
