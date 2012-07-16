@@ -73,15 +73,14 @@ UsersView = (function(_super) {
     var _this = this;
     this.event = options.event;
     this.p_type = options.p_type;
-    console.log(options.el);
     this.collection.on('reset', function() {
       return _this.render();
     });
     return this.collection.fetch({
       data: {
-        event: this.event,
-        page: options.page,
-        p_type: this.p_type
+        event: options.event,
+        p_type: options.p_type,
+        page: options.page
       }
     });
   };
@@ -92,7 +91,6 @@ UsersView = (function(_super) {
       paginations: this.collection.meta,
       p_type: this.p_type
     }));
-    console.log(this.el);
     this.$el.find("a[rel='tooltip']").tooltip();
     this.$el.fadeIn();
     return this.el;
@@ -120,7 +118,10 @@ UsersView = (function(_super) {
         page: page
       }
     });
-    return history.pushState(null, null, "?page=" + page + "&p_type=" + this.p_type);
+    return history.pushState(null, null, "?" + ($.param({
+      page: page,
+      p_type: this.p_type
+    })));
   };
 
   UsersView.prototype.typeFilter = function(ev) {
@@ -131,7 +132,10 @@ UsersView = (function(_super) {
         p_type: this.p_type
       }
     });
-    return history.pushState(null, null, "?page=1&p_type=" + this.p_type);
+    return history.pushState(null, null, "?" + ($.param({
+      page: 1,
+      p_type: this.p_type
+    })));
   };
 
   return UsersView;

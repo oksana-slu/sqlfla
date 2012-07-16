@@ -68,7 +68,10 @@ class UsersView extends Backbone.View
 
     @collection.on 'reset', => @render()
     @collection.fetch
-      data: options
+      data:
+        event: options.event
+        p_type: options.p_type
+        page: options.page
 
   render: ->
 
@@ -108,5 +111,5 @@ class UsersView extends Backbone.View
       data:
         event: @event
         p_type: @p_type
-    history.pushState(null,null,"?#{$.param(page: 1, p_type: @p_type}")
+    history.pushState(null, null,"?#{$.param(page: 1, p_type: @p_type)}")
 # -----------------------------------------------------------------------------
