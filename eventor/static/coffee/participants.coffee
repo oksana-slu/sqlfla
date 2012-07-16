@@ -65,14 +65,10 @@ class UsersView extends Backbone.View
   initialize: (options) ->
     @event = options.event
     @p_type = options.p_type
-    console.log options.el
+
     @collection.on 'reset', => @render()
     @collection.fetch
-      data:
-        event: @event
-        page: options.page
-        p_type: @p_type
-
+      data: options
 
   render: ->
 
@@ -80,7 +76,7 @@ class UsersView extends Backbone.View
       users: @collection.toJSON()
       paginations: @collection.meta
       p_type: @p_type
-    console.log @el
+
     @$el.find("a[rel='tooltip']").tooltip()
     @$el.fadeIn()
 
@@ -99,7 +95,7 @@ class UsersView extends Backbone.View
       data:
         event: @event
         page: page
-    history.pushState(null,null,"?page=" + page + "&p_type=" + @p_type)
+    history.pushState(null, null, "?#{$.param(page: page, p_type: @p_type)}")
 
 
   typeFilter: (ev) ->
@@ -108,5 +104,5 @@ class UsersView extends Backbone.View
       data:
         event: @event
         p_type: @p_type
-    history.pushState(null,null,"?page=1&p_type=" + @p_type)
+    history.pushState(null,null,"?#{$.param(page: 1, p_type: @p_type}")
 # -----------------------------------------------------------------------------
